@@ -10,17 +10,17 @@ using TowerDefense;
 
 namespace TowerDefense
 {
-    internal class CarManager
+    internal class EnemyManager
     {
-        List<Car> cars;
+        List<Enemy> cars;
         GraphicsDevice gd;
         int timeSinceLastCar = 0;
         int millisecondsBetweenCreation = 700;
         int nrOfCarsInCurrentWave = 5;
 
-        public CarManager(GraphicsDevice gd)
+        public EnemyManager(GraphicsDevice gd)
         {
-            cars = new List<Car>();
+            cars = new List<Enemy>();
             this.gd = gd;
         }
 
@@ -30,7 +30,7 @@ namespace TowerDefense
             if (nrOfCarsInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenCreation)
             {
                 timeSinceLastCar -= millisecondsBetweenCreation;
-                Car c = new Car(gd);
+                Enemy c = new Enemy(gd);
                 cars.Add(c);
                 --nrOfCarsInCurrentWave;
             }
@@ -39,7 +39,7 @@ namespace TowerDefense
         public void Update(GameTime gameTime)
         {
             LoadWave(gameTime);
-            foreach (Car c in cars)
+            foreach (Enemy c in cars)
             {
                 c.Update(gameTime);
             }
@@ -47,7 +47,7 @@ namespace TowerDefense
 
         public void CollisionDetection(LaserBeam lb)
         {
-            foreach (Car c in cars)
+            foreach (Enemy c in cars)
             {
                 if (c.hitBox.Intersects(lb.hitBox))
                     c.isHit = true;
@@ -56,7 +56,7 @@ namespace TowerDefense
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Car c in cars)
+            foreach (Enemy c in cars)
             {
                 if (!c.isHit)
                     c.Draw(spriteBatch);

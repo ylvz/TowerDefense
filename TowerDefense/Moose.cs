@@ -12,18 +12,18 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TowerDefense
 {
-    internal class Dragon
+    internal class Moose
     {
         Vector2 pos;
         private int timeSinceLastFrame = 0;
         private int millisecondsPerFrame = 200;
         private Point currentFrame = new Point(0, 0);
-        private Point sheetSize = new Point(5, 1);
-        private Point frameSize = new Point(121, 70);
+        private Point sheetSize = new Point(8, 1);
+        private Point frameSize = new Point(64, 41);
         public LaserBeam laser;
         int delay = 400;
         int timeSinceLast = 0;
-        public Dragon(Vector2 pos)
+        public Moose(Vector2 pos)
         {
             this.pos = pos;
         }

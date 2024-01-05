@@ -10,11 +10,15 @@ using TowerDefense;
 
 namespace TowerDefense
 {
-    internal class Car
+    internal class Enemy
     {
         /// Catmull-Rom path
         CatmullRomPath cpath_moving;
-
+        private int timeSinceLastFrame = 0;
+        private int millisecondsPerFrame = 200;
+        private Point currentFrame = new Point(0, 0);
+        private Point sheetSize = new Point(5, 1);
+        private Point frameSize = new Point(121, 70);
         public Rectangle hitBox;
 
         // Current location along the curve (car).
@@ -26,7 +30,7 @@ namespace TowerDefense
         GraphicsDevice gd;
         public bool isHit = false;
 
-        public Car(GraphicsDevice gd)
+        public Enemy(GraphicsDevice gd)
         {
             this.gd = gd;
 
@@ -47,7 +51,6 @@ namespace TowerDefense
         public void Update(GameTime gameTime)
         {
             // Step our location forward along the curve forward
-
             curve_curpos += curve_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (curve_curpos < 1 & curve_curpos > 0)
             {
@@ -64,7 +67,7 @@ namespace TowerDefense
 
             // Draw control points
             //cpath_road.DrawPoints(_spriteBatch, Color.Black, 6);
-            //cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
+            cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
             if (curve_curpos < 1 & curve_curpos > 0)
                 cpath_moving.DrawMovingObject(curve_curpos, _spriteBatch, TextureHandler.texture_car);
         }

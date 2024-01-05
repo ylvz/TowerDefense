@@ -14,9 +14,9 @@ internal static class TextureHandler
 
     public static void LoadTextures(ContentManager content, GraphicsDevice gd)
     {
-        texture_car = content.Load<Texture2D>("karin3");
+        texture_car = content.Load<Texture2D>("woody");
         texture_road = content.Load<Texture2D>("path");
-        fireDragonTex = content.Load<Texture2D>("dragggg");
+        fireDragonTex = content.Load<Texture2D>("charlieTheCapybaraAnimationSheet");
         background = content.Load<Texture2D>("background");
 
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);

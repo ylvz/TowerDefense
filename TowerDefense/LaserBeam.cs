@@ -31,6 +31,11 @@ namespace TowerDefense
             hitBox.X = (int)pos.X;
         }
 
+        public Vector2 GetPos()
+        {
+            return pos;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(TextureHandler.texture_yellow, pos, Color.White);

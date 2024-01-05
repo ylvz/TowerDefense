@@ -9,26 +9,26 @@ using TowerDefense;
 
 namespace TowerDefense
 {
-    internal class DragonManager
+    internal class AnimalManager
     {
-        List<Dragon> dragonList;
+        List<Moose> dragonList;
         //LaserManager laserManager;
-        public DragonManager()
+        public AnimalManager()
         {
-            dragonList = new List<Dragon>();
+            dragonList = new List<Moose>();
             //laserManager= new LaserManager();
         }
 
         enum TypeOfDragon { FireDragon, IceDragon, WindDragon, ElectricDragon }
 
-        public List<Dragon> GetAllOfficers()
+        public List<Moose> GetAllOfficers()
         {
             return dragonList;
         }
         public void AddPolice(Vector2 pos)
         {
             LaserBeam lb = new LaserBeam(pos);
-            Dragon p = new Dragon(pos);
+            Moose p = new Moose(pos);
             //IceDragon i = new IceDragon(pos);
             //WindDragon w=new WindDragon(pos);
             //ElectricDragon e=new ElectricDragon(pos);
@@ -41,7 +41,7 @@ namespace TowerDefense
 
         public void Update(GameTime gameTime)
         {
-            foreach (Dragon p in dragonList)
+            foreach (Moose p in dragonList)
             {
                 p.Update(gameTime);
             }
@@ -50,7 +50,7 @@ namespace TowerDefense
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            foreach (Dragon p in dragonList)
+            foreach (Moose p in dragonList)
             {
                 p.Draw(spriteBatch);
             }

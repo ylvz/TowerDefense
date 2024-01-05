@@ -13,8 +13,8 @@ namespace TowerDefense
         private SpriteBatch _spriteBatch;
 
         LevelManager levelManager;
-        CarManager carManager;
-        DragonManager policeManager;
+        EnemyManager carManager;
+        AnimalManager policeManager;
 
         public Game1()
         {
@@ -42,8 +42,8 @@ namespace TowerDefense
             TextureHandler.LoadTextures(Content, GraphicsDevice);
             levelManager = new LevelManager();
             levelManager.CreateLevel(GraphicsDevice);
-            carManager = new CarManager(GraphicsDevice);
-            policeManager = new DragonManager();
+            carManager = new EnemyManager(GraphicsDevice);
+            policeManager = new AnimalManager();
             policeManager.AddPolice(new Vector2(800, 100));
             policeManager.AddPolice(new Vector2(800, 500));
         }
