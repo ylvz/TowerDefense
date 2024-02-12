@@ -11,13 +11,15 @@ internal static class TextureHandler
     public static Texture2D texture_road;
     public static Texture2D fireDragonTex;
     public static Texture2D background, iceDragonTex, windDragonTex, elecDragonTex;
+    public static Texture2D mainMenu;
 
     public static void LoadTextures(ContentManager content, GraphicsDevice gd)
     {
-        texture_car = content.Load<Texture2D>("woody");
-        texture_road = content.Load<Texture2D>("path");
+        texture_car = content.Load<Texture2D>("woo");
+        texture_road = content.Load<Texture2D>("path2");
         fireDragonTex = content.Load<Texture2D>("charlieTheCapybaraAnimationSheet");
-        background = content.Load<Texture2D>("background");
+        background = content.Load<Texture2D>("bg");
+        mainMenu = content.Load<Texture2D>("Mainmenu");
 
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });

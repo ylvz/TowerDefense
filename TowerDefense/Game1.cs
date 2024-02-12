@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections;
 using System.Security.Principal;
 using TowerDefense;
 
@@ -15,6 +16,9 @@ namespace TowerDefense
         LevelManager levelManager;
         EnemyManager carManager;
         AnimalManager policeManager;
+        KeyboardState ks;
+        GameState currentGameState = GameState.MainMenu;
+
 
         public Game1()
         {
@@ -26,7 +30,7 @@ namespace TowerDefense
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            _graphics.PreferredBackBufferWidth = 1000;
+            _graphics.PreferredBackBufferWidth = 1148;
             _graphics.PreferredBackBufferHeight = 800;
             _graphics.ApplyChanges();
 
@@ -34,6 +38,8 @@ namespace TowerDefense
 
             base.Initialize();
         }
+
+        enum GameState { MainMenu, Level1, WinScreen, LooseScreen }
 
         protected override void LoadContent()
         {
@@ -53,25 +59,56 @@ namespace TowerDefense
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            carManager.Update(gameTime);
-            policeManager.Update(gameTime);
-            for (int i = 0; i < policeManager.GetAllOfficers().Count; i++)
+            switch (currentGameState)
             {
-                carManager.CollisionDetection(policeManager.GetAllOfficers()[i].laser);
+                case GameState.MainMenu:
+                    ks = Keyboard.GetState();
+                    if (ks.IsKeyDown(Keys.Space))
+                    {
+                        currentGameState = GameState.Level1;
+                    }
+                    break;
+
+
+                case GameState.Level1:
+                    {
+                        carManager.Update(gameTime);
+                        policeManager.Update(gameTime);
+                        for (int i = 0; i < policeManager.GetAllOfficers().Count; i++)
+                        {
+                            carManager.CollisionDetection(policeManager.GetAllOfficers()[i].laser);
+                        }
+
+                        base.Update(gameTime);
+                    }
+                    break;
+
             }
 
-            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            levelManager.Draw(_spriteBatch, 1);
-            carManager.Draw(_spriteBatch);
-            policeManager.Draw(_spriteBatch);
+            switch (currentGameState)
+            {
+                case GameState.MainMenu:
+                    _spriteBatch.Begin();
+                    _spriteBatch.Draw(TextureHandler.mainMenu, GraphicsDevice.Viewport.Bounds, Color.White);
+                    _spriteBatch.End();
+                    break;
 
-            base.Draw(gameTime);
+                case GameState.Level1:
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+
+                    levelManager.Draw(_spriteBatch, 1);
+                    carManager.Draw(_spriteBatch);
+                    policeManager.Draw(_spriteBatch);
+
+                    base.Draw(gameTime);
+                    break;
+
+            }
         }
 
 
