@@ -16,9 +16,9 @@ namespace TowerDefense
         LevelManager levelManager;
         EnemyManager carManager;
         AnimalManager policeManager;
+        ButtonManager buttonManager;
         KeyboardState ks;
         GameState currentGameState = GameState.MainMenu;
-
 
         public Game1()
         {
@@ -50,6 +50,7 @@ namespace TowerDefense
             levelManager.CreateLevel(GraphicsDevice);
             carManager = new EnemyManager(GraphicsDevice);
             policeManager = new AnimalManager();
+            buttonManager = new ButtonManager();
             policeManager.AddPolice(new Vector2(800, 100));
             policeManager.AddPolice(new Vector2(800, 500));
         }
@@ -67,6 +68,7 @@ namespace TowerDefense
                     {
                         currentGameState = GameState.Level1;
                     }
+                    buttonManager.Update(gameTime, this);
                     break;
 
 
@@ -95,7 +97,10 @@ namespace TowerDefense
                 case GameState.MainMenu:
                     _spriteBatch.Begin();
                     _spriteBatch.Draw(TextureHandler.mainMenu, GraphicsDevice.Viewport.Bounds, Color.White);
+                    buttonManager.Draw(_spriteBatch);
                     _spriteBatch.End();
+
+
                     break;
 
                 case GameState.Level1:
@@ -109,6 +114,15 @@ namespace TowerDefense
                     break;
 
             }
+        }
+
+        public void SwitchToLevel1()
+        {
+            currentGameState = GameState.Level1;
+        }
+        public void SwitchToStory()
+        {
+            currentGameState = GameState.Level1;
         }
 
 

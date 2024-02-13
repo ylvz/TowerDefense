@@ -13,22 +13,32 @@ namespace TowerDefense
     internal class LaserBeam
     {
         float range = 40;
-        float speed = 2;
+        float speed = 3;
+        float rotation = 0;
         Vector2 pos;
         Vector2 startPos;
         public Rectangle hitBox;
+        private float rotationSpeed = MathHelper.ToRadians(-1);
 
         public LaserBeam(Vector2 startPos)
         {
             pos = startPos;
             this.startPos = startPos;
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.texture_yellow.Height, TextureHandler.texture_yellow.Width);
+
+
         }
 
         public void Update(GameTime gameTime)
         {
             pos.X -= speed;
+            rotation += rotationSpeed;
             hitBox.X = (int)pos.X;
+
+            if (rotation > MathHelper.TwoPi)
+            {
+                rotation -= MathHelper.TwoPi;
+            }
         }
 
         public Vector2 GetPos()
@@ -38,8 +48,13 @@ namespace TowerDefense
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(TextureHandler.texture_yellow, pos, Color.White);
+            // Calculate the origin point to rotate around
+            Vector2 origin = new Vector2(TextureHandler.texture_yellow.Width / 2, TextureHandler.texture_yellow.Height / 2);
+
+            // Draw with rotation
+            spriteBatch.Draw(TextureHandler.texture_yellow, pos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0.0f);
         }
+
 
 
 

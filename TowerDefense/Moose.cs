@@ -19,7 +19,7 @@ namespace TowerDefense
         private int millisecondsPerFrame = 200;
         private Point currentFrame = new Point(0, 0);
         private Point sheetSize = new Point(8, 1);
-        private Point frameSize = new Point(64, 41);
+        private Point frameSize = new Point(50, 50);
         public LaserBeam laser;
         int delay = 400;
         int timeSinceLast = 0;
