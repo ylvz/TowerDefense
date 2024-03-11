@@ -28,12 +28,13 @@ namespace TowerDefense
         float curve_speed = 0.08f;
 
         GraphicsDevice gd;
+        public int maxLives = 6;
         public bool isHit = false;
+        public bool isDead = false;
 
         public Enemy(GraphicsDevice gd)
         {
             this.gd = gd;
-
             float tension_carpath = 0.5f; // 0 = sharp turns, 0.5 = moderate turns, 1 = soft turns
             cpath_moving = new CatmullRomPath(gd, tension_carpath);
 
@@ -67,9 +68,26 @@ namespace TowerDefense
 
             // Draw control points
             //cpath_road.DrawPoints(_spriteBatch, Color.Black, 6);
-            cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
+            //cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
             if (curve_curpos < 1 & curve_curpos > 0)
                 cpath_moving.DrawMovingObject(curve_curpos, _spriteBatch, TextureHandler.texture_car);
+
+            _spriteBatch.Begin();
+            int segmentWidth = TextureHandler.healthTex.Width*5 / maxLives;
+
+            // Calculate the position of the health bar above the enemy
+            int healthBarX = hitBox.X - TextureHandler.healthTex.Width - 5;
+            int healthBarY = hitBox.Y - TextureHandler.healthTex.Height -28;
+
+            // Draw health bar segments
+            for (int i = 0; i < maxLives; i++)
+            {
+                Rectangle segmentRect = new Rectangle(healthBarX + i * segmentWidth, healthBarY, segmentWidth, TextureHandler.healthTex.Height);
+
+                // Draw health bar segment
+                _spriteBatch.Draw(TextureHandler.healthTex, segmentRect, Color.Red);
+            }
+            _spriteBatch.End();
         }
 
     }

@@ -18,7 +18,7 @@ namespace TowerDefense
         AnimalManager policeManager;
         ButtonManager buttonManager;
         KeyboardState ks;
-        GameState currentGameState = GameState.MainMenu;
+        GameState currentGameState = GameState.Level1;
 
         public Game1()
         {
@@ -105,11 +105,9 @@ namespace TowerDefense
 
                 case GameState.Level1:
                     GraphicsDevice.Clear(Color.CornflowerBlue);
-
                     levelManager.Draw(_spriteBatch, 1);
                     carManager.Draw(_spriteBatch);
                     policeManager.Draw(_spriteBatch);
-
                     base.Draw(gameTime);
                     break;
 

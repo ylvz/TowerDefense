@@ -12,10 +12,18 @@ namespace TowerDefense
     internal class AnimalManager
     {
         List<Moose> dragonList;
+        Vector2 wolfButtonPos, mooseButtonPos, hogButtonPos;
+        Rectangle wolfRect, mooseRect, hogRect;
         //LaserManager laserManager;
         public AnimalManager()
         {
             dragonList = new List<Moose>();
+            wolfButtonPos = new Vector2(530, 680);
+            mooseButtonPos = new Vector2(680, 680);
+            hogButtonPos = new Vector2(380, 680);
+            wolfRect = new Rectangle((int)wolfButtonPos.X, (int)wolfButtonPos.Y, TextureHandler.startButton.Width, TextureHandler.startButton.Height);
+            mooseRect = new Rectangle((int)mooseButtonPos.X, (int)mooseButtonPos.Y, TextureHandler.quitButton.Width, TextureHandler.quitButton.Height);
+            hogRect = new Rectangle((int)hogButtonPos.X, (int)hogButtonPos.Y, TextureHandler.storyButton.Width, TextureHandler.storyButton.Height);
             //laserManager= new LaserManager();
         }
 
@@ -54,6 +62,9 @@ namespace TowerDefense
             {
                 p.Draw(spriteBatch);
             }
+            spriteBatch.Draw(TextureHandler.wolfButton, wolfButtonPos, Color.White);
+            spriteBatch.Draw(TextureHandler.mooseButton, mooseButtonPos, Color.White);
+            spriteBatch.Draw(TextureHandler.hogButton, hogButtonPos, Color.White);
             spriteBatch.End();
         }
     }

@@ -17,6 +17,8 @@ namespace TowerDefense
         int timeSinceLastCar = 0;
         int millisecondsBetweenCreation = 700;
         int nrOfCarsInCurrentWave = 5;
+        bool isHit = false;
+        bool isDead = false;
 
         public EnemyManager(GraphicsDevice gd)
         {
@@ -50,7 +52,11 @@ namespace TowerDefense
             foreach (Enemy c in cars)
             {
                 if (c.hitBox.Intersects(lb.hitBox))
+                {
+                    c.maxLives = -1;
                     c.isHit = true;
+                }
+
             }
         }
 
