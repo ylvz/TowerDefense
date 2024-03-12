@@ -15,8 +15,11 @@ namespace TowerDefense
         float range = 40;
         float speed = 3;
         float rotation = 0;
+        Vector2 direction;
         Vector2 pos;
+        Vector2 enemyPos;
         Vector2 startPos;
+        public bool hasHit;
         public Rectangle hitBox;
         private float rotationSpeed = MathHelper.ToRadians(-1);
 
@@ -52,7 +55,8 @@ namespace TowerDefense
             Vector2 origin = new Vector2(TextureHandler.texture_yellow.Width / 2, TextureHandler.texture_yellow.Height / 2);
 
             // Draw with rotation
-            spriteBatch.Draw(TextureHandler.texture_yellow, pos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0.0f);
+            if (!hasHit) { spriteBatch.Draw(TextureHandler.texture_yellow, pos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0.0f); }
+            
         }
 
 

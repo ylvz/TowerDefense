@@ -11,13 +11,13 @@ namespace TowerDefense
 {
     internal class AnimalManager
     {
-        List<Moose> dragonList;
+        List<Moose> animalList;
         Vector2 wolfButtonPos, mooseButtonPos, hogButtonPos;
         Rectangle wolfRect, mooseRect, hogRect;
         //LaserManager laserManager;
         public AnimalManager()
         {
-            dragonList = new List<Moose>();
+            animalList = new List<Moose>();
             wolfButtonPos = new Vector2(530, 680);
             mooseButtonPos = new Vector2(680, 680);
             hogButtonPos = new Vector2(380, 680);
@@ -31,9 +31,9 @@ namespace TowerDefense
 
         public List<Moose> GetAllOfficers()
         {
-            return dragonList;
+            return animalList;
         }
-        public void AddPolice(Vector2 pos)
+        public void AddPolice(Vector2 pos, EnemyManager enemyManager)
         {
             LaserBeam lb = new LaserBeam(pos);
             Moose p = new Moose(pos);
@@ -41,7 +41,7 @@ namespace TowerDefense
             //WindDragon w=new WindDragon(pos);
             //ElectricDragon e=new ElectricDragon(pos);
             p.AddLaser(lb);
-            dragonList.Add(p);
+            animalList.Add(p);
             //dragonList.Add(i);
             //dragonList.Add(w);
             //dragonList.Add(e);
@@ -49,7 +49,7 @@ namespace TowerDefense
 
         public void Update(GameTime gameTime)
         {
-            foreach (Moose p in dragonList)
+            foreach (Moose p in animalList)
             {
                 p.Update(gameTime);
             }
@@ -58,7 +58,7 @@ namespace TowerDefense
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            foreach (Moose p in dragonList)
+            foreach (Moose p in animalList)
             {
                 p.Draw(spriteBatch);
             }

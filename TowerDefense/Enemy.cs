@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TowerDefense;
+using System.Diagnostics;
 
 namespace TowerDefense
 {
-    internal class Enemy
+    internal class Enemy: GameObject
     {
         /// Catmull-Rom path
         CatmullRomPath cpath_moving;
@@ -19,7 +20,10 @@ namespace TowerDefense
         private Point currentFrame = new Point(0, 0);
         private Point sheetSize = new Point(5, 1);
         private Point frameSize = new Point(121, 70);
-        public Rectangle hitBox;
+        public int cooldownTimer = 0;
+        public int cooldownDuration = 1000;
+        public bool hasCollidedWithForest = false;
+
 
         // Current location along the curve (car).
         // 0 and 1 is at the first and last control point, respectively.
@@ -32,7 +36,7 @@ namespace TowerDefense
         public bool isHit = false;
         public bool isDead = false;
 
-        public Enemy(GraphicsDevice gd)
+        public Enemy(GraphicsDevice gd, Rectangle rect):base(rect)
         {
             this.gd = gd;
             float tension_carpath = 0.5f; // 0 = sharp turns, 0.5 = moderate turns, 1 = soft turns
@@ -45,11 +49,12 @@ namespace TowerDefense
             // Call again if curve is altered or if window is resized
 
             cpath_moving.DrawFillSetup(gd, 2, 1, 256);
-
+            tex = TextureHandler.texture_car;
+            pos=new Vector2(hitBox.X, hitBox.Y);
             hitBox = new Rectangle(0, 0, 50, 50);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             // Step our location forward along the curve forward
             curve_curpos += curve_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -59,9 +64,11 @@ namespace TowerDefense
                 hitBox.X = (int)vec.X;
                 hitBox.Y = (int)vec.Y;
             }
+
+            
         }
 
-        public void Draw(SpriteBatch _spriteBatch)
+        public override void Draw(SpriteBatch _spriteBatch)
         {
 
             //cpath_moving.DrawFill(gd, TextureHandler.texture_red);
@@ -70,24 +77,34 @@ namespace TowerDefense
             //cpath_road.DrawPoints(_spriteBatch, Color.Black, 6);
             //cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
             if (curve_curpos < 1 & curve_curpos > 0)
-                cpath_moving.DrawMovingObject(curve_curpos, _spriteBatch, TextureHandler.texture_car);
+                cpath_moving.DrawMovingObject(curve_curpos, _spriteBatch, tex);
 
-            _spriteBatch.Begin();
-            int segmentWidth = TextureHandler.healthTex.Width*5 / maxLives;
+
+
+            int segmentWidth = maxLives;
 
             // Calculate the position of the health bar above the enemy
             int healthBarX = hitBox.X - TextureHandler.healthTex.Width - 5;
-            int healthBarY = hitBox.Y - TextureHandler.healthTex.Height -28;
+            int healthBarY = hitBox.Y - TextureHandler.healthTex.Height - 28;
 
-            // Draw health bar segments
-            for (int i = 0; i < maxLives; i++)
+            if (curve_curpos < 1 & curve_curpos > 0)
             {
-                Rectangle segmentRect = new Rectangle(healthBarX + i * segmentWidth, healthBarY, segmentWidth, TextureHandler.healthTex.Height);
+                _spriteBatch.Begin();
+                for (int i = 0; i < maxLives; i++)
+                {
+                    Rectangle segmentRect = new Rectangle(healthBarX + i * segmentWidth, healthBarY, segmentWidth, TextureHandler.healthTex.Height);
 
-                // Draw health bar segment
-                _spriteBatch.Draw(TextureHandler.healthTex, segmentRect, Color.Red);
+                    // Draw health bar segment
+                    _spriteBatch.Draw(TextureHandler.healthTex, segmentRect, Color.Red);
+                }
+                _spriteBatch.End();
+
             }
-            _spriteBatch.End();
+        }
+
+        public Vector2 GetPosition()
+        {
+            return pos;
         }
 
     }

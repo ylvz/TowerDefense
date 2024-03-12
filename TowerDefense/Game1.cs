@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
+using System.Collections.Generic;
 using System.Security.Principal;
 using TowerDefense;
 
@@ -14,9 +15,10 @@ namespace TowerDefense
         private SpriteBatch _spriteBatch;
 
         LevelManager levelManager;
-        EnemyManager carManager;
-        AnimalManager policeManager;
+        EnemyManager enemyManager;
+        AnimalManager animalManager;
         ButtonManager buttonManager;
+        Forest forest;
         KeyboardState ks;
         GameState currentGameState = GameState.Level1;
 
@@ -48,11 +50,12 @@ namespace TowerDefense
             TextureHandler.LoadTextures(Content, GraphicsDevice);
             levelManager = new LevelManager();
             levelManager.CreateLevel(GraphicsDevice);
-            carManager = new EnemyManager(GraphicsDevice);
-            policeManager = new AnimalManager();
+            enemyManager = new EnemyManager(GraphicsDevice);
+            animalManager = new AnimalManager();
             buttonManager = new ButtonManager();
-            policeManager.AddPolice(new Vector2(800, 100));
-            policeManager.AddPolice(new Vector2(800, 500));
+            forest = new Forest();
+            animalManager.AddPolice(new Vector2(800, 100),enemyManager);
+            animalManager.AddPolice(new Vector2(800, 500), enemyManager);
         }
 
         protected override void Update(GameTime gameTime)
@@ -74,11 +77,12 @@ namespace TowerDefense
 
                 case GameState.Level1:
                     {
-                        carManager.Update(gameTime);
-                        policeManager.Update(gameTime);
-                        for (int i = 0; i < policeManager.GetAllOfficers().Count; i++)
+                        List<Vector2> enemyPositions = enemyManager.GetEnemyPositions();
+                        enemyManager.Update(gameTime);
+                        animalManager.Update(gameTime);
+                        for (int i = 0; i < animalManager.GetAllOfficers().Count; i++)
                         {
-                            carManager.CollisionDetection(policeManager.GetAllOfficers()[i].laser);
+                            enemyManager.CollisionDetection(animalManager.GetAllOfficers()[i].laser,gameTime,forest);
                         }
 
                         base.Update(gameTime);
@@ -105,9 +109,11 @@ namespace TowerDefense
 
                 case GameState.Level1:
                     GraphicsDevice.Clear(Color.CornflowerBlue);
+                    
                     levelManager.Draw(_spriteBatch, 1);
-                    carManager.Draw(_spriteBatch);
-                    policeManager.Draw(_spriteBatch);
+                    enemyManager.Draw(_spriteBatch);
+                    animalManager.Draw(_spriteBatch);
+                    forest.Draw(_spriteBatch);
                     base.Draw(gameTime);
                     break;
 

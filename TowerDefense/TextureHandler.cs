@@ -12,7 +12,7 @@ internal static class TextureHandler
     public static Texture2D fireDragonTex;
     public static Texture2D background, iceDragonTex, windDragonTex, elecDragonTex;
     public static Texture2D mainMenu, wolfButton, mooseButton, hogButton;
-    public static Texture2D startButton, quitButton, storyButton, healthTex;
+    public static Texture2D startButton, quitButton, storyButton, healthTex, forestTex;
 
     public static void LoadTextures(ContentManager content, GraphicsDevice gd)
     {
@@ -28,6 +28,7 @@ internal static class TextureHandler
         wolfButton = content.Load<Texture2D>("wolfbutton");
         mooseButton = content.Load<Texture2D>("moosebutton");
         hogButton = content.Load<Texture2D>("hogbutton");
+        forestTex = content.Load<Texture2D>("forest");
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });
 
