@@ -11,13 +11,17 @@ namespace TowerDefense
 {
     internal class AnimalManager
     {
-        List<Moose> animalList;
+        List<Moose> mooseList;
+        List<Wolf> wolfList;
+        List<HedgeHog> hogList;
         Vector2 wolfButtonPos, mooseButtonPos, hogButtonPos;
         Rectangle wolfRect, mooseRect, hogRect;
         //LaserManager laserManager;
         public AnimalManager()
         {
-            animalList = new List<Moose>();
+            mooseList = new List<Moose>();
+            wolfList = new List<Wolf>();
+            hogList=new List<HedgeHog>();
             wolfButtonPos = new Vector2(530, 680);
             mooseButtonPos = new Vector2(680, 680);
             hogButtonPos = new Vector2(380, 680);
@@ -29,43 +33,79 @@ namespace TowerDefense
 
         enum TypeOfDragon { FireDragon, IceDragon, WindDragon, ElectricDragon }
 
-        public List<Moose> GetAllOfficers()
+        public List<Moose> GetMoose()
         {
-            return animalList;
+            return mooseList;
         }
-        public void AddPolice(Vector2 pos, EnemyManager enemyManager)
+        public List<Wolf> GetWolf()
+        {
+            return wolfList;
+        }
+        public List<HedgeHog> GetHog()
+        {
+            return hogList;
+        }
+
+        public void AddAnimal(Vector2 pos, EnemyManager enemyManager, string animalType)
         {
             LaserBeam lb = new LaserBeam(pos);
-            Moose p = new Moose(pos);
-            //IceDragon i = new IceDragon(pos);
-            //WindDragon w=new WindDragon(pos);
-            //ElectricDragon e=new ElectricDragon(pos);
-            p.AddLaser(lb);
-            animalList.Add(p);
-            //dragonList.Add(i);
-            //dragonList.Add(w);
-            //dragonList.Add(e);
+            if (animalType == "Moose")
+            {
+                Moose moose = new Moose(pos);
+                moose.AddLaser(lb);
+                mooseList.Add(moose);
+            }
+            else if (animalType == "Wolf")
+            {
+                Wolf wolf = new Wolf(pos);
+                wolf.AddLaser(lb);
+                wolfList.Add(wolf);
+            }
+            else if (animalType == "HedgeHog")
+            {
+                HedgeHog hog = new HedgeHog(pos);
+                hog.AddLaser(lb);
+                hogList.Add(hog);
+            }
         }
+
 
         public void Update(GameTime gameTime)
         {
-            foreach (Moose p in animalList)
+            foreach (Moose m in mooseList)
             {
-                p.Update(gameTime);
+                m.Update(gameTime);
+            }
+            foreach (Wolf w in wolfList)
+            {
+                w.Update(gameTime);
+            }
+            foreach (HedgeHog h in hogList)
+            {
+                h.Update(gameTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            foreach (Moose p in animalList)
+            foreach (Moose moose in mooseList)
             {
-                p.Draw(spriteBatch);
+                moose.Draw(spriteBatch);
+            }
+            foreach (Wolf wolf in wolfList)
+            {
+                wolf.Draw(spriteBatch);
+            }
+            foreach (HedgeHog hog in hogList)
+            {
+                hog.Draw(spriteBatch);
             }
             spriteBatch.Draw(TextureHandler.wolfButton, wolfButtonPos, Color.White);
             spriteBatch.Draw(TextureHandler.mooseButton, mooseButtonPos, Color.White);
             spriteBatch.Draw(TextureHandler.hogButton, hogButtonPos, Color.White);
             spriteBatch.End();
         }
+
     }
 }

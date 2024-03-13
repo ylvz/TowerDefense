@@ -6,11 +6,12 @@ using Microsoft.Xna.Framework.Input;
 internal static class TextureHandler
 {
     public static Texture2D texture_red;
-    public static Texture2D texture_yellow;
+    public static Texture2D antlerTex;
     public static Texture2D texture_car;
     public static Texture2D texture_road;
-    public static Texture2D fireDragonTex;
-    public static Texture2D background, iceDragonTex, windDragonTex, elecDragonTex;
+    public static Texture2D mooseTex;
+    public static Texture2D background, wolfTex, hogTex;
+    public static Texture2D spikesTex, biteTex;
     public static Texture2D mainMenu, wolfButton, mooseButton, hogButton;
     public static Texture2D startButton, quitButton, storyButton, healthTex, forestTex;
 
@@ -18,7 +19,7 @@ internal static class TextureHandler
     {
         texture_car = content.Load<Texture2D>("woo");
         texture_road = content.Load<Texture2D>("path2");
-        fireDragonTex = content.Load<Texture2D>("moose");
+        mooseTex = content.Load<Texture2D>("moose");
         background = content.Load<Texture2D>("bg");
         mainMenu = content.Load<Texture2D>("Mainmenu");
         startButton = content.Load<Texture2D>("button1");
@@ -29,9 +30,13 @@ internal static class TextureHandler
         mooseButton = content.Load<Texture2D>("moosebutton");
         hogButton = content.Load<Texture2D>("hogbutton");
         forestTex = content.Load<Texture2D>("forest");
+        hogTex = content.Load<Texture2D>("hog");
+        wolfTex =content.Load<Texture2D>("wolfye");
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });
 
-        texture_yellow = content.Load<Texture2D>("antlers");
+        antlerTex = content.Load<Texture2D>("antlers");
+        spikesTex = content.Load<Texture2D>("spikes");
+        biteTex = content.Load<Texture2D>("bitey");
     }
 }

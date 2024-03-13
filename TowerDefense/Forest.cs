@@ -37,7 +37,7 @@ namespace TowerDefense
             // Calculate the position of the health bar above the forest
             int healthBarX = hitBox.X - TextureHandler.healthTex.Width - 5;
             int healthBarY = hitBox.Y - TextureHandler.healthTex.Height - 28;
-            int segmentWidth = maxLife;
+            int segmentWidth = 40;
 
             // Draw health bar segments
             for (int i = 0; i < maxLife; i++)

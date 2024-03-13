@@ -27,7 +27,7 @@ namespace TowerDefense
         {
             pos = startPos;
             this.startPos = startPos;
-            hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.texture_yellow.Height, TextureHandler.texture_yellow.Width);
+            hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.antlerTex.Height, TextureHandler.antlerTex.Width);
 
 
         }
@@ -49,14 +49,29 @@ namespace TowerDefense
             return pos;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, string animalType)
         {
             // Calculate the origin point to rotate around
-            Vector2 origin = new Vector2(TextureHandler.texture_yellow.Width / 2, TextureHandler.texture_yellow.Height / 2);
+            Vector2 origin = new Vector2(TextureHandler.antlerTex.Width / 2, TextureHandler.antlerTex.Height / 2);
 
             // Draw with rotation
-            if (!hasHit) { spriteBatch.Draw(TextureHandler.texture_yellow, pos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0.0f); }
-            
+
+            if (!hasHit) 
+            {
+                if (animalType == "Moose")
+                {
+                    spriteBatch.Draw(TextureHandler.antlerTex, pos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0.0f);
+                }
+                if (animalType == "Wolf")
+                {
+                    spriteBatch.Draw(TextureHandler.biteTex, pos, null, Color.White, 0, origin, 1.0f, SpriteEffects.None, 0.0f);
+                }
+                if (animalType == "HedgeHog")
+                {
+                    spriteBatch.Draw(TextureHandler.spikesTex, pos, null, Color.White, 0, origin, 1.0f, SpriteEffects.None, 0.0f);
+                }
+            }
+
         }
 
 

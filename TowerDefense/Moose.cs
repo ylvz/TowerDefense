@@ -33,7 +33,7 @@ namespace TowerDefense
             this.laser = laser;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             //timeSinceLast += gameTime.ElapsedGameTime.Milliseconds;
             //if (timeSinceLast > delay)
@@ -42,14 +42,14 @@ namespace TowerDefense
             laser.Update(gameTime);
 
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(TextureHandler.fireDragonTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            laser.Draw(spriteBatch);
+            spriteBatch.Draw(TextureHandler.mooseTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            laser.Draw(spriteBatch,"Moose");
         }
 
-        private void PlayerAni(GameTime gameTime)
+        public virtual void PlayerAni(GameTime gameTime)
         {
             timeSinceLastFrame += gameTime.ElapsedGameTime.Milliseconds;
             if (timeSinceLastFrame > millisecondsPerFrame)
