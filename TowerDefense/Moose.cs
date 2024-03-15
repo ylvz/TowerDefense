@@ -12,20 +12,19 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TowerDefense
 {
-    internal class Moose
+    internal class Moose:Animal
     {
-        Vector2 pos;
-        private int timeSinceLastFrame = 0;
-        private int millisecondsPerFrame = 200;
-        private Point currentFrame = new Point(0, 0);
-        private Point sheetSize = new Point(8, 1);
-        private Point frameSize = new Point(50, 50);
         public LaserBeam laser;
-        int delay = 400;
-        int timeSinceLast = 0;
-        public Moose(Vector2 pos)
+        public Moose(Vector2 pos,Texture2D tex):base(pos,tex)
         {
             this.pos = pos;
+            currentFrame = new Point(0, 0);
+            sheetSize = new Point(8, 1);
+            frameSize = new Point(50, 50);
+            timeSinceLastFrame = 0;
+            millisecondsPerFrame = 200;
+            delay = 400;
+            timeSinceLast = 0;
         }
 
         public void AddLaser(LaserBeam laser)
@@ -45,27 +44,8 @@ namespace TowerDefense
         public virtual void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(TextureHandler.mooseTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             laser.Draw(spriteBatch,"Moose");
-        }
-
-        public virtual void PlayerAni(GameTime gameTime)
-        {
-            timeSinceLastFrame += gameTime.ElapsedGameTime.Milliseconds;
-            if (timeSinceLastFrame > millisecondsPerFrame)
-            {
-                timeSinceLastFrame -= millisecondsPerFrame;
-                ++currentFrame.X;
-                if (currentFrame.X >= sheetSize.X)
-                {
-                    currentFrame.X = 0;
-                    ++currentFrame.Y;
-                    if (currentFrame.Y >= sheetSize.Y)
-                    {
-                        currentFrame.Y = 0;
-                    }
-                }
-            }
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace TowerDefense
 {
-    internal class Enemy: GameObject
+    internal class Enemy
     {
         /// Catmull-Rom path
         CatmullRomPath cpath_moving;
@@ -23,6 +23,9 @@ namespace TowerDefense
         public int cooldownTimer = 0;
         public int cooldownDuration = 1000;
         public bool hasCollidedWithForest = false;
+        Texture2D tex;
+        Vector2 pos;
+        public Rectangle hitBox;
 
 
         // Current location along the curve (car).
@@ -36,7 +39,7 @@ namespace TowerDefense
         public bool isHit = false;
         public bool isDead = false;
 
-        public Enemy(GraphicsDevice gd, Rectangle rect):base(rect)
+        public Enemy(GraphicsDevice gd)
         {
             this.gd = gd;
             float tension_carpath = 0.5f; // 0 = sharp turns, 0.5 = moderate turns, 1 = soft turns
@@ -54,7 +57,7 @@ namespace TowerDefense
             hitBox = new Rectangle(0, 0, 50, 50);
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             // Step our location forward along the curve forward
             curve_curpos += curve_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -68,7 +71,7 @@ namespace TowerDefense
             
         }
 
-        public override void Draw(SpriteBatch _spriteBatch)
+        public void Draw(SpriteBatch _spriteBatch)
         {
 
             //cpath_moving.DrawFill(gd, TextureHandler.texture_red);

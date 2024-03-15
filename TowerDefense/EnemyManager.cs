@@ -36,7 +36,7 @@ namespace TowerDefense
             if (nrOfCarsInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenCreation)
             {
                 timeSinceLastCar -= millisecondsBetweenCreation;
-                Enemy enemy = new Enemy(gd, rect);
+                Enemy enemy = new Enemy(gd);
                 enemies.Add(enemy);
                 --nrOfCarsInCurrentWave;
             }
@@ -58,7 +58,7 @@ namespace TowerDefense
             foreach (Enemy enemy in enemies)
             {
                 // Collision detection with laser beam
-                if (enemy.HitBox.Intersects(lb.hitBox))
+                if (enemy.hitBox.Intersects(lb.hitBox))
                 {
                     if (enemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
                     {
@@ -73,7 +73,7 @@ namespace TowerDefense
                 }
 
                 // Collision detection with forest
-                if (enemy.HitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
+                if (enemy.hitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
                 {
                     // Deduct only one life if the enemy has not collided with the forest before
                     forest.maxLife -= 1;

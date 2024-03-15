@@ -30,7 +30,6 @@ namespace TowerDefense
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            Debug.WriteLine(maxLife);
             // Draw the forest texture
             spriteBatch.Draw(TextureHandler.forestTex, hitBox, Color.White);
 

@@ -9,7 +9,7 @@ namespace TowerDefense
     internal class Level
     {
         /// Catmull-Rom path
-        CatmullRomPath cpath_road;
+        public CatmullRomPath cpath_road;
         CatmullRomPath cpath_moving;
         public static int levelNr;
 

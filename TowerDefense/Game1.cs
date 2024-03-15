@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Principal;
+using TowerDefence;
 using TowerDefense;
 
 namespace TowerDefense
@@ -14,16 +15,15 @@ namespace TowerDefense
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
+        private static RenderTarget2D renderTarget;
         LevelManager levelManager;
         EnemyManager enemyManager;
         AnimalManager animalManager;
         ButtonManager buttonManager;
         Forest forest;
+        
         KeyboardState ks;
         GameState currentGameState = GameState.Level1;
-        RenderTarget2D renderTarget;
-
 
         public Game1()
         {
@@ -39,7 +39,7 @@ namespace TowerDefense
             _graphics.PreferredBackBufferHeight = 800;
             _graphics.ApplyChanges();
 
-            Window.Title = "Forest Defence";
+            Window.Title = "SpeedScan Enforcer";
 
             base.Initialize();
         }
@@ -60,7 +60,6 @@ namespace TowerDefense
             //animalManager.AddAnimal(new Vector2(800, 500), enemyManager, "Moose");
             //animalManager.AddAnimal(new Vector2(800, 100), enemyManager, "Wolf");
             //animalManager.AddAnimal(new Vector2(800, 400), enemyManager, "HedgeHog");
-            renderTarget = new RenderTarget2D(GraphicsDevice, Window.ClientBounds.Width, Window.ClientBounds.Height);
         }
 
         protected override void Update(GameTime gameTime)
@@ -68,18 +67,10 @@ namespace TowerDefense
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            ks = Keyboard.GetState();
-            // Debug: Check if the keys are being pressed
-            if (ks.IsKeyDown(Keys.W))
-                Console.WriteLine("W key pressed");
-            if (ks.IsKeyDown(Keys.M))
-                Console.WriteLine("M key pressed");
-            if (ks.IsKeyDown(Keys.H))
-                Console.WriteLine("H key pressed");
-
             switch (currentGameState)
             {
                 case GameState.MainMenu:
+                    ks = Keyboard.GetState();
                     if (ks.IsKeyDown(Keys.Space))
                     {
                         currentGameState = GameState.Level1;
@@ -87,43 +78,31 @@ namespace TowerDefense
                     buttonManager.Update(gameTime, this);
                     break;
 
+
                 case GameState.Level1:
                     {
+                        MouseState currentMouseState = KeyMouseReader.mouseState;
+                        DrawOnRenderTarget(levelManager.levels[0]);
                         List<Vector2> enemyPositions = enemyManager.GetEnemyPositions();
                         enemyManager.Update(gameTime);
-                        animalManager.Update(gameTime);
-                        // Placing animals based on keyboard input
-                        if (ks.IsKeyDown(Keys.W)) // Placera en varg (wolf)
+                        animalManager.Update(gameTime,enemyManager,currentMouseState);
+                        for (int i = 0; i < animalManager.GetMoose().Count; i++)
                         {
-                            Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                            Console.WriteLine("Mouse position: " + mousePosition); // Debug: Check mouse position
-                            if (CanPlace(mousePosition, TextureHandler.wolfButton.Width, TextureHandler.wolfButton.Height))
-                            {
-                                animalManager.AddAnimal(mousePosition, enemyManager, "Wolf");
-                            }
+                            enemyManager.CollisionDetection(animalManager.GetMoose()[i].laser, gameTime, forest);
                         }
-                        else if (ks.IsKeyDown(Keys.M)) // Placera en älg (moose)
+                        for (int i = 0; i < animalManager.GetWolf().Count; i++)
                         {
-                            Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                            Console.WriteLine("Mouse position: " + mousePosition); // Debug: Check mouse position
-                            if (CanPlace(mousePosition, TextureHandler.mooseButton.Width, TextureHandler.mooseButton.Height))
-                            {
-                                animalManager.AddAnimal(mousePosition, enemyManager, "Moose");
-                            }
+                            enemyManager.CollisionDetection(animalManager.GetWolf()[i].laser, gameTime, forest);
                         }
-                        else if (ks.IsKeyDown(Keys.H)) // Placera en igelkott (hedgehog)
+                        for (int i = 0; i < animalManager.GetHog().Count; i++)
                         {
-                            Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                            Console.WriteLine("Mouse position: " + mousePosition); // Debug: Check mouse position
-                            if (CanPlace(mousePosition, TextureHandler.hogButton.Width, TextureHandler.hogButton.Height))
-                            {
-                                animalManager.AddAnimal(mousePosition, enemyManager, "HedgeHog");
-                            }
+                            enemyManager.CollisionDetection(animalManager.GetHog()[i].laser, gameTime, forest);
                         }
 
                         base.Update(gameTime);
                     }
                     break;
+
             }
 
         }
@@ -143,23 +122,46 @@ namespace TowerDefense
                     break;
 
                 case GameState.Level1:
-                    GraphicsDevice.SetRenderTarget(renderTarget);
-                    GraphicsDevice.Clear(Color.Transparent);
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
 
                     levelManager.Draw(_spriteBatch, 1);
                     enemyManager.Draw(_spriteBatch);
                     animalManager.Draw(_spriteBatch);
                     forest.Draw(_spriteBatch);
                     base.Draw(gameTime);
-                    GraphicsDevice.SetRenderTarget(null);
-                    _spriteBatch.Begin();
-                    _spriteBatch.Draw(renderTarget, Vector2.Zero, Color.White);
-                    _spriteBatch.End();
                     break;
 
             }
+        }
 
+        private void DrawOnRenderTarget(Level lvl)
+        {
+            //Ändra så att GraphicsDevice ritar mot vårt render target
+            GraphicsDevice.SetRenderTarget(renderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+            _spriteBatch.Begin();
 
+            //Rita ut texturen. Den ritas nu ut till vårt render target istället
+            //för på skärmen.
+            lvl.cpath_road.DrawFill(GraphicsDevice, TextureHandler.texture_road);
+            _spriteBatch.End();
+
+            //Sätt GraphicsDevice att åter igen peka på skärmen
+            GraphicsDevice.SetRenderTarget(null);
+        }
+
+        public static bool CanPlaceObject(Animal g)
+        {
+            Color[] pixels = new Color[g.tex.Width * g.tex.Height];
+            Color[] pixels2 = new Color[g.tex.Width * g.tex.Height];
+            g.tex.GetData<Color>(pixels2);
+            renderTarget.GetData(0, g.hitBox, pixels, 0, pixels.Length);
+            for (int i = 0; i < pixels.Length; ++i)
+            {
+                if (pixels[i].A > 0.0f && pixels2[i].A > 0.0f)
+                    return false;
+            }
+            return true;
         }
 
         public void SwitchToLevel1()
@@ -170,28 +172,6 @@ namespace TowerDefense
         {
             currentGameState = GameState.Level1;
         }
-
-        private bool CanPlace(Vector2 position, int width, int height)
-        {
-            // Skapa en rektangel baserat på objektets position och dimensioner
-            Rectangle objRect = new Rectangle((int)position.X, (int)position.Y, width, height);
-
-            // Kolla varje pixelfärg i carpath-texturen och se om någon av dem är opak
-            Color[] carpathColors = new Color[TextureHandler.texture_road.Width * TextureHandler.texture_road.Height];
-            TextureHandler.texture_road.GetData(carpathColors);
-            foreach (Color color in carpathColors)
-            {
-                if (color.A > 0)
-                {
-                    // Om det finns minst en opak pixel, objektet kan inte placeras där
-                    return false;
-                }
-            }
-
-            // Om ingen opak pixel hittades, objektet kan placeras där
-            return true;
-        }
-
 
 
 

@@ -10,7 +10,7 @@ using TowerDefense;
 
 namespace TowerDefense
 {
-    internal class LaserBeam
+    public class LaserBeam
     {
         float range = 40;
         float speed = 3;

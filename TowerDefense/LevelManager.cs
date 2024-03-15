@@ -9,7 +9,7 @@ namespace TowerDefense
     internal class LevelManager
     {
 
-        List<Level> levels;
+        public List<Level> levels;
         public LevelManager()
         {
             levels = new List<Level>();
