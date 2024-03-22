@@ -17,6 +17,7 @@ namespace TowerDefense
 
         public HedgeHog(Vector2 pos,Texture2D tex) : base(pos,tex)
         {
+            hitBox = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
             this.pos = pos;
             timeSinceLastFrame = 0;
             millisecondsPerFrame = 200;

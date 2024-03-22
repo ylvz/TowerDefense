@@ -34,8 +34,8 @@ internal static class TextureHandler
         hogTex = content.Load<Texture2D>("hog");
         wolfTex =content.Load<Texture2D>("wolfye");
         placingMooseTex = content.Load<Texture2D>("MoosePlacer");
-        //placingWolfTex = content.Load<Texture2D>("PlacingWolf");
-        //placingHogTex = content.Load<Texture2D>("PlacingHog");
+        placingWolfTex = content.Load<Texture2D>("WolfPlacer");
+        placingHogTex = content.Load<Texture2D>("HogPlacer");
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });
 

@@ -32,7 +32,7 @@ namespace TowerDefense
         // 0 and 1 is at the first and last control point, respectively.
         float curve_curpos = 0;
         // How fast to go along the curve = fraction of curve / second
-        float curve_speed = 0.08f;
+        float curve_speed = 0.03f;
 
         GraphicsDevice gd;
         public int maxLives = 6;

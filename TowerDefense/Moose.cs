@@ -17,6 +17,7 @@ namespace TowerDefense
         public LaserBeam laser;
         public Moose(Vector2 pos,Texture2D tex):base(pos,tex)
         {
+            hitBox = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
             currentFrame = new Point(0, 0);
             sheetSize = new Point(8, 1);
             frameSize = new Point(50, 50);
@@ -41,7 +42,7 @@ namespace TowerDefense
         public virtual void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(tex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(TextureHandler.mooseTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             laser.Draw(spriteBatch,"Moose");
         }
     }

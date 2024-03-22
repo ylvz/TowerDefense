@@ -27,13 +27,13 @@ namespace TowerDefense
         {
             mooseList = new List<Moose>();
             wolfList = new List<Wolf>();
-            hogList=new List<HedgeHog>();
+            hogList = new List<HedgeHog>();
             wolfButtonPos = new Vector2(530, 680);
             mooseButtonPos = new Vector2(680, 680);
             hogButtonPos = new Vector2(380, 680);
-            wolfRect = new Rectangle((int)wolfButtonPos.X, (int)wolfButtonPos.Y, TextureHandler.startButton.Width, TextureHandler.startButton.Height);
-            mooseRect = new Rectangle((int)mooseButtonPos.X, (int)mooseButtonPos.Y, TextureHandler.quitButton.Width, TextureHandler.quitButton.Height);
-            hogRect = new Rectangle((int)hogButtonPos.X, (int)hogButtonPos.Y, TextureHandler.storyButton.Width, TextureHandler.storyButton.Height);
+            wolfRect = new Rectangle((int)wolfButtonPos.X, (int)wolfButtonPos.Y, TextureHandler.wolfButton.Width, TextureHandler.wolfButton.Height);
+            mooseRect = new Rectangle((int)mooseButtonPos.X, (int)mooseButtonPos.Y, TextureHandler.mooseButton.Width, TextureHandler.mooseButton.Height);
+            hogRect = new Rectangle((int)hogButtonPos.X, (int)hogButtonPos.Y, TextureHandler.hogButton.Width, TextureHandler.hogButton.Height);
             //laserManager= new LaserManager();
         }
 
@@ -55,7 +55,7 @@ namespace TowerDefense
             LaserBeam lb = new LaserBeam(pos);
             if (animalType == "Moose")
             {
-                Moose moose = new Moose(pos,TextureHandler.mooseTex);
+                Moose moose = new Moose(pos, TextureHandler.mooseTex);
                 if (Game1.CanPlaceObject(moose))
                 {
                     moose.AddLaser(lb);
@@ -65,69 +65,99 @@ namespace TowerDefense
             else if (animalType == "Wolf")
             {
                 Wolf wolf = new Wolf(pos, TextureHandler.wolfTex);
-                wolf.AddLaser(lb);
-                wolfList.Add(wolf);
+                if (Game1.CanPlaceObject(wolf))
+                {
+                    wolf.AddLaser(lb);
+                    wolfList.Add(wolf);
+                }
             }
             else if (animalType == "HedgeHog")
             {
                 HedgeHog hog = new HedgeHog(pos, TextureHandler.hogTex);
-                hog.AddLaser(lb);
-                hogList.Add(hog);
+                if (Game1.CanPlaceObject(hog))
+                {
+                    hog.AddLaser(lb);
+                    hogList.Add(hog);
+                }
+
             }
         }
 
-        public Animal AddPotentialAnimal(int MouseCoordinateX, int MouseCoordinateY)
+        public Animal AddPotentialMoose(int MouseCoordinateX, int MouseCoordinateY)
         {
             Vector2 Position = new Vector2(MouseCoordinateX, MouseCoordinateY);
             return new Moose(Position, TextureHandler.placingMooseTex);
         }
 
-
-
-        public void Update(GameTime gameTime, EnemyManager enemyManager, MouseState currentMouseState)
+        public Animal AddPotentialWolf(int MouseCoordinateX, int MouseCoordinateY)
         {
+            Vector2 Position = new Vector2(MouseCoordinateX, MouseCoordinateY);
+            return new Wolf(Position, TextureHandler.placingWolfTex);
+        }
+
+        public Animal AddPotentialHedgeHog(int MouseCoordinateX, int MouseCoordinateY)
+        {
+            Vector2 Position = new Vector2(MouseCoordinateX, MouseCoordinateY);
+            return new HedgeHog(Position, TextureHandler.placingHogTex);
+        }
+
+
+
+        public void Update(GameTime gameTime, EnemyManager enemyManager, MouseState previousMouseState)
+        {
+            MouseState currentMouseState = Mouse.GetState();
             int MouseCoordinateX = currentMouseState.X;
             int MouseCoordinateY = currentMouseState.Y;
             KeyboardState keyboardState = Keyboard.GetState();
 
-            // Check if the 'M' key is pressed
-            if (keyboardState.IsKeyDown(Keys.M))
+            // Check if the 'M' key is pressed to start placing a moose
+            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released && mooseRect.Contains(MouseCoordinateX, MouseCoordinateY))
             {
-                // Toggle the IsPlacingObject property
-                IsPlacingObject = !IsPlacingObject;
+                IsPlacingObject = true;
+                AnimalToBePlaced[0] = AddPotentialMoose(MouseCoordinateX, MouseCoordinateY);
+            }
+            // Check if the 'W' key is pressed to start placing a wolf
+            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released && wolfRect.Contains(MouseCoordinateX, MouseCoordinateY))
+            {
+                IsPlacingObject = true;
+                AnimalToBePlaced[0] = AddPotentialWolf(MouseCoordinateX, MouseCoordinateY);
+            }
+            // Check if the 'H' key is pressed to start placing a hedgehog
+            else if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released && hogRect.Contains(MouseCoordinateX, MouseCoordinateY))
+            {
+                IsPlacingObject = true;
+                AnimalToBePlaced[0] = AddPotentialHedgeHog(MouseCoordinateX, MouseCoordinateY);
+            }
 
-                // If placing object, add a potential animal to be placed
-                if (IsPlacingObject)
+            // Check if the right mouse button is clicked to place the animal
+            if (IsPlacingObject && currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released)
+            {
+                if (AnimalToBePlaced[0] is Moose)
                 {
-                    AnimalToBePlaced[0] = AddPotentialAnimal(MouseCoordinateX, MouseCoordinateY);
-                }
-                else if (KeyMouseReader.LeftClick() && IsPlacingObject && AnimalToBePlaced[0] != null) // Check if AnimalToBePlaced[0] is not null
-                {
-                    // If not placing object, add the animal to the list
                     AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Moose");
-                    // Clear the potential animal
-                    AnimalToBePlaced[0] = null;
                 }
+                if (AnimalToBePlaced[0] is Wolf)
+                {
+                    AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Wolf");
+                }
+                if (AnimalToBePlaced[0] is HedgeHog)
+                {
+                    AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "HedgeHog");
+                }
+                IsPlacingObject = false; // Reset placing state
+                AnimalToBePlaced[0] = null; // Clear potential animal
             }
-
-            // Check if the right mouse button is clicked
-            if (currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released && IsPlacingObject && AnimalToBePlaced[0] != null)
-            {
-                // Add the animal to the list at the current mouse position
-                AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Moose");
-                // Clear the potential animal
-                AnimalToBePlaced[0] = null;
-            }
-
-            // Update the previous mouse state
-            previousMouseState = currentMouseState;
 
             // Update the potential animal's position to follow the mouse
-            if (IsPlacingObject)
+            if (IsPlacingObject && AnimalToBePlaced[0] != null)
             {
                 AnimalToBePlaced[0].pos = new Vector2(MouseCoordinateX, MouseCoordinateY);
             }
 
+            // Update previous mouse state
+            previousMouseState = currentMouseState;
+
+            // Update animals
             foreach (Moose m in mooseList)
             {
                 m.Update(gameTime);
@@ -159,11 +189,10 @@ namespace TowerDefense
             {
                 hog.Draw(spriteBatch);
             }
-            if (IsPlacingObject)
+            if (IsPlacingObject && AnimalToBePlaced[0] != null)
             {
                 spriteBatch.Draw(AnimalToBePlaced[0].tex, AnimalToBePlaced[0].pos, Color.White);
             }
-
 
             spriteBatch.Draw(TextureHandler.wolfButton, wolfButtonPos, Color.White);
             spriteBatch.Draw(TextureHandler.mooseButton, mooseButtonPos, Color.White);

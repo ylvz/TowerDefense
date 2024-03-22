@@ -59,9 +59,7 @@ namespace TowerDefense
             animalManager = new AnimalManager();
             buttonManager = new ButtonManager();
             forest = new Forest();
-            //animalManager.AddAnimal(new Vector2(800, 500), enemyManager, "Moose");
-            //animalManager.AddAnimal(new Vector2(800, 100), enemyManager, "Wolf");
-            //animalManager.AddAnimal(new Vector2(800, 400), enemyManager, "HedgeHog");
+            renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
         }
 
         protected override void Update(GameTime gameTime)
@@ -79,7 +77,6 @@ namespace TowerDefense
                     }
                     buttonManager.Update(gameTime, this);
                     break;
-
 
                 case GameState.Level1:
                     {
@@ -176,6 +173,8 @@ namespace TowerDefense
                 if (pixels[i].A > 0.0f && pixels2[i].A > 0.0f)
                     return false;
             }
+
+            
 
             return true;
         }

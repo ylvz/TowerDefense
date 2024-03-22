@@ -17,8 +17,8 @@ namespace TowerDefense
         GraphicsDevice gd;
         Rectangle rect;
         int timeSinceLastCar = 0;
-        int millisecondsBetweenCreation = 700;
-        int nrOfCarsInCurrentWave = 5;
+        int millisecondsBetweenCreation = 2000;
+        int nrOfCarsInCurrentWave = 8;
         bool isHit = false;
         bool isDead = false;
 

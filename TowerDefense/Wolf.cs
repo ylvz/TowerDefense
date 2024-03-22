@@ -17,12 +17,11 @@ namespace TowerDefense
 
         public Wolf(Vector2 pos, Texture2D tex) : base(pos,tex)
         {
-            this.pos = pos;
+            hitBox = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
             timeSinceLastFrame = 0;
             millisecondsPerFrame = 200;
             currentFrame = new Point(0, 0);
             sheetSize = new Point(4, 1);
-            frameSize = new Point(71, 50);
             frameSize = new Point(71, 50);
             delay = 400;
             timeSinceLast = 0;
