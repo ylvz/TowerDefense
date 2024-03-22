@@ -64,7 +64,7 @@ namespace TowerDefense
             //cpath_moving.DrawFill(gd, TextureHandler.texture_red);
 
             // Draw control points
-            //cpath_road.DrawPoints(_spriteBatch, Color.Black, 6);
+            ////cpath_road.DrawPoints(_spriteBatch, Color.Black, 6);
             //cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
 
             //cpath_moving.DrawMovingObject(curve_curpos, _spriteBatch, TextureHandler.texture_car);

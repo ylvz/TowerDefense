@@ -20,6 +20,7 @@ namespace TowerDefense
         Rectangle wolfRect, mooseRect, hogRect;
         Vector2 animalPos;
         public Animal[] AnimalToBePlaced = new Animal[1];
+        MouseState previousMouseState;
         public bool IsPlacingObject { get; set; }
         //LaserManager laserManager;
         public AnimalManager()
@@ -35,8 +36,6 @@ namespace TowerDefense
             hogRect = new Rectangle((int)hogButtonPos.X, (int)hogButtonPos.Y, TextureHandler.storyButton.Width, TextureHandler.storyButton.Height);
             //laserManager= new LaserManager();
         }
-
-        enum TypeOfDragon { FireDragon, IceDragon, WindDragon, ElectricDragon }
 
         public List<Moose> GetMoose()
         {
@@ -56,7 +55,7 @@ namespace TowerDefense
             LaserBeam lb = new LaserBeam(pos);
             if (animalType == "Moose")
             {
-                Moose moose = new Moose(pos, TextureHandler.mooseTex);
+                Moose moose = new Moose(pos,TextureHandler.mooseTex);
                 if (Game1.CanPlaceObject(moose))
                 {
                     moose.AddLaser(lb);
@@ -80,14 +79,13 @@ namespace TowerDefense
         public Animal AddPotentialAnimal(int MouseCoordinateX, int MouseCoordinateY)
         {
             Vector2 Position = new Vector2(MouseCoordinateX, MouseCoordinateY);
-            return new Moose(Position, TextureHandler.mooseTex);
+            return new Moose(Position, TextureHandler.placingMooseTex);
         }
 
 
-        public void Update(GameTime gameTime,EnemyManager enemyManager, MouseState currentMouseState)
+
+        public void Update(GameTime gameTime, EnemyManager enemyManager, MouseState currentMouseState)
         {
-            //AddAnimal(new Vector2(800, 100), enemyManager, "Wolf");
-            //AddAnimal(new Vector2(800, 400), enemyManager, "HedgeHog");
             int MouseCoordinateX = currentMouseState.X;
             int MouseCoordinateY = currentMouseState.Y;
             KeyboardState keyboardState = Keyboard.GetState();
@@ -103,7 +101,7 @@ namespace TowerDefense
                 {
                     AnimalToBePlaced[0] = AddPotentialAnimal(MouseCoordinateX, MouseCoordinateY);
                 }
-                else if(KeyMouseReader.LeftClick()&&IsPlacingObject)
+                else if (KeyMouseReader.LeftClick() && IsPlacingObject && AnimalToBePlaced[0] != null) // Check if AnimalToBePlaced[0] is not null
                 {
                     // If not placing object, add the animal to the list
                     AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Moose");
@@ -112,18 +110,24 @@ namespace TowerDefense
                 }
             }
 
+            // Check if the right mouse button is clicked
+            if (currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released && IsPlacingObject && AnimalToBePlaced[0] != null)
+            {
+                // Add the animal to the list at the current mouse position
+                AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Moose");
+                // Clear the potential animal
+                AnimalToBePlaced[0] = null;
+            }
 
-            //if (KeyMouseReader.LeftClick() && IsPlacingObject && Game1.CanPlaceObject(TowerToBePlaced[0]))
-            //{
-            //    AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Moose");
-            //    TowerToBePlaced[0].TowerID = ++Globals.IDTracker;
-            //    Globals.Towers.Add(TowerToBePlaced[0]);
-            //    TowerToBePlaced[0] = CreateTower(MouseCoordinateX, MouseCoordinateY, WeaponTypes.MachineGun);
-            //}
-            //else if (TowerToBePlaced[0] != null)
-            //{
-            //    UpdateTower(MouseCoordinateX, MouseCoordinateY);
-            //}
+            // Update the previous mouse state
+            previousMouseState = currentMouseState;
+
+            // Update the potential animal's position to follow the mouse
+            if (IsPlacingObject)
+            {
+                AnimalToBePlaced[0].pos = new Vector2(MouseCoordinateX, MouseCoordinateY);
+            }
+
             foreach (Moose m in mooseList)
             {
                 m.Update(gameTime);
@@ -137,6 +141,8 @@ namespace TowerDefense
                 h.Update(gameTime);
             }
         }
+
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -157,6 +163,7 @@ namespace TowerDefense
             {
                 spriteBatch.Draw(AnimalToBePlaced[0].tex, AnimalToBePlaced[0].pos, Color.White);
             }
+
 
             spriteBatch.Draw(TextureHandler.wolfButton, wolfButtonPos, Color.White);
             spriteBatch.Draw(TextureHandler.mooseButton, mooseButtonPos, Color.White);

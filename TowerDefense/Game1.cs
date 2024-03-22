@@ -21,7 +21,9 @@ namespace TowerDefense
         AnimalManager animalManager;
         ButtonManager buttonManager;
         Forest forest;
-        
+        MouseState previousMouseState;
+
+
         KeyboardState ks;
         GameState currentGameState = GameState.Level1;
 
@@ -82,10 +84,11 @@ namespace TowerDefense
                 case GameState.Level1:
                     {
                         MouseState currentMouseState = KeyMouseReader.mouseState;
+                        animalManager.Update(gameTime, enemyManager, previousMouseState); // Pass previousMouseState here
+                        previousMouseState = currentMouseState; // Update previousMouseState for the next frame
                         DrawOnRenderTarget(levelManager.levels[0]);
                         List<Vector2> enemyPositions = enemyManager.GetEnemyPositions();
                         enemyManager.Update(gameTime);
-                        animalManager.Update(gameTime,enemyManager,currentMouseState);
                         for (int i = 0; i < animalManager.GetMoose().Count; i++)
                         {
                             enemyManager.CollisionDetection(animalManager.GetMoose()[i].laser, gameTime, forest);
@@ -106,6 +109,7 @@ namespace TowerDefense
             }
 
         }
+
 
         protected override void Draw(GameTime gameTime)
         {
@@ -152,17 +156,30 @@ namespace TowerDefense
 
         public static bool CanPlaceObject(Animal g)
         {
+            if (g == null || g.tex == null || renderTarget == null)
+            {
+                // Handle the case where either g, g.tex, or renderTarget is null
+                return false;
+            }
+
             Color[] pixels = new Color[g.tex.Width * g.tex.Height];
             Color[] pixels2 = new Color[g.tex.Width * g.tex.Height];
+
+            // Make sure g.tex is not null before accessing its data
             g.tex.GetData<Color>(pixels2);
+
+            // Make sure renderTarget is not null before accessing its data
             renderTarget.GetData(0, g.hitBox, pixels, 0, pixels.Length);
+
             for (int i = 0; i < pixels.Length; ++i)
             {
                 if (pixels[i].A > 0.0f && pixels2[i].A > 0.0f)
                     return false;
             }
+
             return true;
         }
+
 
         public void SwitchToLevel1()
         {

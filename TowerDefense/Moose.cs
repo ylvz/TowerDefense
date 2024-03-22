@@ -17,7 +17,6 @@ namespace TowerDefense
         public LaserBeam laser;
         public Moose(Vector2 pos,Texture2D tex):base(pos,tex)
         {
-            this.pos = pos;
             currentFrame = new Point(0, 0);
             sheetSize = new Point(8, 1);
             frameSize = new Point(50, 50);
@@ -34,9 +33,7 @@ namespace TowerDefense
 
         public virtual void Update(GameTime gameTime)
         {
-            //timeSinceLast += gameTime.ElapsedGameTime.Milliseconds;
-            //if (timeSinceLast > delay)
-            //{
+
             PlayerAni(gameTime);
             laser.Update(gameTime);
 

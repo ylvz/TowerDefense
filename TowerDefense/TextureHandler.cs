@@ -13,6 +13,7 @@ internal static class TextureHandler
     public static Texture2D background, wolfTex, hogTex;
     public static Texture2D spikesTex, biteTex;
     public static Texture2D mainMenu, wolfButton, mooseButton, hogButton;
+    public static Texture2D placingMooseTex, placingWolfTex, placingHogTex;
     public static Texture2D startButton, quitButton, storyButton, healthTex, forestTex;
 
     public static void LoadTextures(ContentManager content, GraphicsDevice gd)
@@ -32,6 +33,9 @@ internal static class TextureHandler
         forestTex = content.Load<Texture2D>("forest");
         hogTex = content.Load<Texture2D>("hog");
         wolfTex =content.Load<Texture2D>("wolfye");
+        placingMooseTex = content.Load<Texture2D>("MoosePlacer");
+        //placingWolfTex = content.Load<Texture2D>("PlacingWolf");
+        //placingHogTex = content.Load<Texture2D>("PlacingHog");
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });
 
