@@ -18,7 +18,7 @@ namespace TowerDefense
         Rectangle rect;
         int timeSinceLastCar = 0;
         int millisecondsBetweenCreation = 2000;
-        int nrOfCarsInCurrentWave = 8;
+        int nrOfCarsInCurrentWave = 5;
         bool isHit = false;
         bool isDead = false;
 

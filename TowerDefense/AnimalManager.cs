@@ -79,7 +79,6 @@ namespace TowerDefense
                     hog.AddLaser(lb);
                     hogList.Add(hog);
                 }
-
             }
         }
 

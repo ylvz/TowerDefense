@@ -12,9 +12,11 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TowerDefense
 {
-    internal class Moose:Animal
+    internal class Moose: Animal
     {
         public LaserBeam laser;
+        public List<LaserBeam> lasers;
+        public int CooldownTimer { get; set; }
         public Moose(Vector2 pos,Texture2D tex):base(pos,tex)
         {
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
@@ -25,25 +27,30 @@ namespace TowerDefense
             millisecondsPerFrame = 200;
             delay = 400;
             timeSinceLast = 0;
+            CooldownTimer = 0;
+            lasers = new List<LaserBeam>();
         }
 
         public void AddLaser(LaserBeam laser)
         {
-            this.laser = laser;
+            lasers.Add(laser);
+        }
+
+        public Vector2 GetPosition()
+        {
+            return pos;
         }
 
         public virtual void Update(GameTime gameTime)
         {
 
             PlayerAni(gameTime);
-            laser.Update(gameTime);
 
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
 
             spriteBatch.Draw(TextureHandler.mooseTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            laser.Draw(spriteBatch,"Moose");
         }
     }
 }
