@@ -43,7 +43,7 @@ namespace TowerDefense
 
         public virtual void Update(GameTime gameTime)
         {
-
+            laser.Update(gameTime);
             PlayerAni(gameTime);
 
         }
@@ -51,6 +51,7 @@ namespace TowerDefense
         {
 
             spriteBatch.Draw(TextureHandler.mooseTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            laser.Draw(spriteBatch, "Moose");
         }
     }
 }
