@@ -50,9 +50,40 @@ namespace TowerDefense
             return hogList;
         }
 
+        public List<LaserBeam> GetMooseLasers()
+        {
+            List<LaserBeam> mooseLasers = new List<LaserBeam>();
+            foreach (Moose moose in mooseList)
+            {
+                mooseLasers.AddRange(moose.lasers);
+            }
+            return mooseLasers;
+        }
+
+        public List<LaserBeam> GetWolfLasers()
+        {
+            List<LaserBeam> wolfLasers = new List<LaserBeam>();
+            foreach (Wolf wolf in wolfList)
+            {
+                wolfLasers.AddRange(wolf.lasers);
+            }
+            return wolfLasers;
+        }
+
+        public List<LaserBeam> GetHogLasers()
+        {
+            List<LaserBeam> hogLasers = new List<LaserBeam>();
+            foreach (HedgeHog hog in hogList)
+            {
+                hogLasers.AddRange(hog.lasers);
+            }
+            return hogLasers;
+        }
+
         public void AddAnimal(Vector2 pos, EnemyManager enemyManager, string animalType)
         {
             LaserBeam lb = new LaserBeam(pos);
+
             if (animalType == "Moose")
             {
                 Moose moose = new Moose(pos, TextureHandler.mooseTex);

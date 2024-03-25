@@ -88,15 +88,15 @@ namespace TowerDefense
                         enemyManager.Update(gameTime);
                         for (int i = 0; i < animalManager.GetMoose().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetMoose()[i].laser, gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetMooseLasers(), gameTime, forest);
                         }
                         for (int i = 0; i < animalManager.GetWolf().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetWolf()[i].laser, gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetWolfLasers(), gameTime, forest);
                         }
                         for (int i = 0; i < animalManager.GetHog().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetHog()[i].laser, gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetHogLasers(), gameTime, forest);
                         }
 
                         base.Update(gameTime);
@@ -145,6 +145,19 @@ namespace TowerDefense
             //Rita ut texturen. Den ritas nu ut till vårt render target istället
             //för på skärmen.
             lvl.cpath_road.DrawFill(GraphicsDevice, TextureHandler.texture_road);
+            foreach (var moose in animalManager.GetMoose())
+            {
+                moose.Draw(_spriteBatch);
+            }
+            foreach (var wolf in animalManager.GetWolf())
+            {
+                wolf.Draw(_spriteBatch);
+            }
+            foreach (var hog in animalManager.GetHog())
+            {
+                hog.Draw(_spriteBatch);
+            }
+
             _spriteBatch.End();
 
             //Sätt GraphicsDevice att åter igen peka på skärmen

@@ -1,24 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.Direct3D9;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TowerDefense;
 
 namespace TowerDefense
 {
     public class LaserBeam
     {
-        float range = 40;
-        float speed = 3;
-        float rotation = 0;
-        Vector2 direction;
-        Vector2 pos;
-        Vector2 enemyPos;
-        Vector2 startPos;
+        // Your existing fields
+        private float speed = 3;
+        private float rotation = 0;
+        private Vector2 pos;
         public bool hasHit;
         public Rectangle hitBox;
         private float rotationSpeed = MathHelper.ToRadians(-1);
@@ -26,14 +16,12 @@ namespace TowerDefense
         public LaserBeam(Vector2 startPos)
         {
             pos = startPos;
-            this.startPos = startPos;
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.antlerTex.Height, TextureHandler.antlerTex.Width);
-
-
         }
 
         public void Update(GameTime gameTime)
         {
+            // Update the position and rotation
             pos.X -= speed;
             rotation += rotationSpeed;
             hitBox.X = (int)pos.X;
@@ -44,11 +32,6 @@ namespace TowerDefense
             }
         }
 
-        public Vector2 GetPos()
-        {
-            return pos;
-        }
-
         public void Draw(SpriteBatch spriteBatch, string animalType)
         {
             // Calculate the origin point to rotate around
@@ -56,7 +39,7 @@ namespace TowerDefense
 
             // Draw with rotation
 
-            if (!hasHit) 
+            if (!hasHit)
             {
                 if (animalType == "Moose")
                 {
@@ -73,9 +56,6 @@ namespace TowerDefense
             }
 
         }
-
-
-
-
     }
 }
+

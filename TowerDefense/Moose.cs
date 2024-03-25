@@ -14,9 +14,6 @@ namespace TowerDefense
 {
     internal class Moose: Animal
     {
-        public LaserBeam laser;
-        public List<LaserBeam> lasers;
-        public int CooldownTimer { get; set; }
         public Moose(Vector2 pos,Texture2D tex):base(pos,tex)
         {
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
@@ -26,14 +23,8 @@ namespace TowerDefense
             timeSinceLastFrame = 0;
             millisecondsPerFrame = 200;
             delay = 400;
-            timeSinceLast = 0;
-            CooldownTimer = 0;
-            lasers = new List<LaserBeam>();
-        }
-
-        public void AddLaser(LaserBeam laser)
-        {
-            lasers.Add(laser);
+            shotInterval = 5000;
+            timeSinceLastShot = 0;
         }
 
         public Vector2 GetPosition()
@@ -43,15 +34,30 @@ namespace TowerDefense
 
         public virtual void Update(GameTime gameTime)
         {
-            laser.Update(gameTime);
+            timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            // Check if it's time to fire a new shot
+            if (timeSinceLastShot >= shotInterval)
+            {
+                FireShot();
+                timeSinceLastShot = 0; // Reset the timer
+            }
+            foreach (var laser in lasers)
+            {
+                laser.Update(gameTime);
+            }
             PlayerAni(gameTime);
 
         }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
 
             spriteBatch.Draw(TextureHandler.mooseTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            laser.Draw(spriteBatch, "Moose");
+            foreach (var laser in lasers)
+            {
+                laser.Draw(spriteBatch, "Moose");
+            }
         }
     }
 }

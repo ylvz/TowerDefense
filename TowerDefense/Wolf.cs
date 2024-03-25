@@ -25,6 +25,8 @@ namespace TowerDefense
             frameSize = new Point(71, 50);
             delay = 400;
             timeSinceLast = 0;
+            shotInterval = 5000;
+            timeSinceLastShot = 0;
 
         }
 
@@ -32,18 +34,28 @@ namespace TowerDefense
         {
             
             PlayerAni(gameTime);
-            laser.Update(gameTime);
+            timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            // Check if it's time to fire a new shot
+            if (timeSinceLastShot >= shotInterval)
+            {
+                FireShot();
+                timeSinceLastShot = 0; // Reset the timer
+            }
+            foreach (var laser in lasers)
+            {
+                laser.Update(gameTime);
+            }
 
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(TextureHandler.wolfTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            laser.Draw(spriteBatch, "Wolf");
+            foreach (var laser in lasers)
+            {
+                laser.Draw(spriteBatch, "Wolf");
+            }
         }
 
-        public void AddLaser(LaserBeam laser)
-        {
-            this.laser = laser;
-        }
     }
 }

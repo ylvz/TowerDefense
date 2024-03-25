@@ -53,31 +53,34 @@ namespace TowerDefense
 
         }
 
-        public void CollisionDetection(LaserBeam lb, GameTime gameTime, Forest forest)
+        public void CollisionDetection(List<LaserBeam> lasers, GameTime gameTime, Forest forest)
         {
-            foreach (Enemy enemy in enemies)
+            foreach (LaserBeam lb in lasers)
             {
-                // Collision detection with laser beam
-                if (enemy.hitBox.Intersects(lb.hitBox))
+                foreach (Enemy enemy in enemies)
                 {
-                    if (enemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
+                    // Perform collision detection with each enemy and laser
+                    if (enemy.hitBox.Intersects(lb.hitBox))
                     {
-                        enemy.maxLives -= 1;
-                        enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
-                        lb.hasHit = true;
+                        if (enemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
+                        {
+                            enemy.maxLives -= 1;
+                            enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
+                            lb.hasHit = true;
+                        }
                     }
-                }
-                else
-                {
-                    enemy.isHit = false;
-                }
+                    else
+                    {
+                        enemy.isHit = false;
+                    }
 
-                // Collision detection with forest
-                if (enemy.hitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
-                {
-                    // Deduct only one life if the enemy has not collided with the forest before
-                    forest.maxLife -= 1;
-                    enemy.hasCollidedWithForest = true; // Set the flag to true
+                    // Collision detection with forest
+                    if (enemy.hitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
+                    {
+                        // Deduct only one life if the enemy has not collided with the forest before
+                        forest.maxLife -= 1;
+                        enemy.hasCollidedWithForest = true; // Set the flag to true
+                    }
                 }
             }
 

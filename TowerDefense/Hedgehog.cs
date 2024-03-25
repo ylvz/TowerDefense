@@ -13,7 +13,6 @@ namespace TowerDefense
 {
     internal class HedgeHog : Animal
     {
-        public LaserBeam laser;
 
         public HedgeHog(Vector2 pos,Texture2D tex) : base(pos,tex)
         {
@@ -26,6 +25,8 @@ namespace TowerDefense
             frameSize = new Point(43, 25);
             delay = 400;
             timeSinceLast = 0;
+            shotInterval = 3500;
+            timeSinceLastShot = 0;
         }
 
 
@@ -33,18 +34,28 @@ namespace TowerDefense
         {
 
             PlayerAni(gameTime);
-            laser.Update(gameTime);
+            timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-        }
-        public void AddLaser(LaserBeam laser)
-        {
-            this.laser = laser;
+            // Check if it's time to fire a new shot
+            if (timeSinceLastShot >= shotInterval)
+            {
+                FireShot();
+                timeSinceLastShot = 0; // Reset the timer
+            }
+            foreach (var laser in lasers)
+            {
+                laser.Update(gameTime);
+            }
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(TextureHandler.hogTex, pos, new Rectangle(currentFrame.X * frameSize.X, currentFrame.Y * frameSize.Y, frameSize.X, frameSize.Y), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            laser.Draw(spriteBatch,"HedgeHog");
+            foreach (var laser in lasers)
+            {
+                laser.Draw(spriteBatch, "HedgeHog");
+            }
         }
     }
 }

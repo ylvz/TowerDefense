@@ -20,14 +20,30 @@ namespace TowerDefense
         protected int timeSinceLast;
         public Texture2D tex;
         public Rectangle hitBox;
+        public List<LaserBeam> lasers;
+        protected float timeSinceLastShot;
+        protected float shotInterval;
 
 
         public Animal(Vector2 Pos, Texture2D Tex)
         {
             tex = Tex;
             pos = Pos;
+            lasers = new List<LaserBeam>();
         }
 
+        public void AddLaser(LaserBeam laser)
+        {
+            lasers.Add(laser);
+        }
+
+        public void FireShot()
+        {
+            // Create a new instance of LaserBeam representing the shot
+            LaserBeam newShot = new LaserBeam(pos);
+            // Add the new shot to the list of lasers
+            lasers.Add(newShot);
+        }
 
         public virtual void PlayerAni(GameTime gameTime)
         {
