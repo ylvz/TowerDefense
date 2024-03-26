@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace TowerDefense
 {
-    internal class Enemy
+    internal class WeakEnemy
     {
         /// Catmull-Rom path
         CatmullRomPath cpath_moving;
@@ -39,7 +39,7 @@ namespace TowerDefense
         public bool isHit = false;
         public bool isDead = false;
 
-        public Enemy(GraphicsDevice gd)
+        public WeakEnemy(GraphicsDevice gd)
         {
             this.gd = gd;
             float tension_carpath = 0.5f; // 0 = sharp turns, 0.5 = moderate turns, 1 = soft turns
@@ -68,7 +68,12 @@ namespace TowerDefense
                 hitBox.Y = (int)vec.Y;
             }
 
-            
+            if (maxLives < 1)
+            {
+                isDead = true;
+            }
+
+
         }
 
         public void Draw(SpriteBatch _spriteBatch)
@@ -96,8 +101,6 @@ namespace TowerDefense
                 for (int i = 0; i < maxLives; i++)
                 {
                     Rectangle segmentRect = new Rectangle(healthBarX + i * segmentWidth, healthBarY, segmentWidth, TextureHandler.healthTex.Height);
-
-                    // Draw health bar segment
                     _spriteBatch.Draw(TextureHandler.healthTex, segmentRect, Color.Red);
                 }
                 _spriteBatch.End();

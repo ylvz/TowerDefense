@@ -4,6 +4,7 @@ using SharpDX.Direct3D9;
 using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace TowerDefense
 {
     internal class EnemyManager
     {
-        public List<Enemy> enemies;
+        public List<WeakEnemy> enemies;
         GraphicsDevice gd;
         Rectangle rect;
         int timeSinceLastCar = 0;
@@ -25,7 +26,7 @@ namespace TowerDefense
 
         public EnemyManager(GraphicsDevice gd)
         {
-            enemies = new List<Enemy>();
+            enemies = new List<WeakEnemy>();
             this.gd = gd;
 
         }
@@ -36,7 +37,7 @@ namespace TowerDefense
             if (nrOfCarsInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenCreation)
             {
                 timeSinceLastCar -= millisecondsBetweenCreation;
-                Enemy enemy = new Enemy(gd);
+                WeakEnemy enemy = new WeakEnemy(gd);
                 enemies.Add(enemy);
                 --nrOfCarsInCurrentWave;
             }
@@ -45,19 +46,35 @@ namespace TowerDefense
         public void Update(GameTime gameTime)
         {
             LoadWave(gameTime);
-            foreach (Enemy enemy in enemies)
+            foreach (WeakEnemy enemy in enemies.ToList()) // Use ToList() to create a copy of the list
             {
                 enemy.Update(gameTime);
+                if (enemy.isDead)
+                {
+                    enemies.Remove(enemy); // Remove dead enemies from the list
+                }
             }
+
 
 
         }
 
         public void CollisionDetection(List<LaserBeam> lasers, GameTime gameTime, Forest forest)
         {
+            foreach (WeakEnemy enemy in enemies)
+            {
+                if (enemy.hitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
+                {
+                    // Deduct only one life if the enemy has not collided with the forest before
+                    forest.maxLife -= 1;
+                    enemy.hasCollidedWithForest = true; // Set the flag to true
+                }
+                
+            }
+
             foreach (LaserBeam lb in lasers)
             {
-                foreach (Enemy enemy in enemies)
+                foreach (WeakEnemy enemy in enemies)
                 {
                     // Perform collision detection with each enemy and laser
                     if (enemy.hitBox.Intersects(lb.hitBox))
@@ -65,6 +82,7 @@ namespace TowerDefense
                         if (enemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
                         {
                             enemy.maxLives -= 1;
+                            Debug.WriteLine(enemy.maxLives);
                             enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
                             lb.hasHit = true;
                         }
@@ -73,19 +91,11 @@ namespace TowerDefense
                     {
                         enemy.isHit = false;
                     }
-
-                    // Collision detection with forest
-                    if (enemy.hitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
-                    {
-                        // Deduct only one life if the enemy has not collided with the forest before
-                        forest.maxLife -= 1;
-                        enemy.hasCollidedWithForest = true; // Set the flag to true
-                    }
                 }
             }
 
             // Cooldown timer update
-            foreach (Enemy enemy in enemies)
+            foreach (WeakEnemy enemy in enemies)
             {
                 if (enemy.cooldownTimer > 0)
                 {
@@ -98,17 +108,16 @@ namespace TowerDefense
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Enemy enemy in enemies)
+            foreach (WeakEnemy enemy in enemies)
             {
-                if (!enemy.isDead)
-                    enemy.Draw(spriteBatch);
+                 enemy.Draw(spriteBatch);
             }
         }
 
         public List<Vector2> GetEnemyPositions()
         {
             List<Vector2> positions = new List<Vector2>();
-            foreach (Enemy enemy in enemies)
+            foreach (WeakEnemy enemy in enemies)
             {
                 positions.Add(enemy.GetPosition());
             }
