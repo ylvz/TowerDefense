@@ -7,7 +7,7 @@ internal static class TextureHandler
 {
     public static Texture2D texture_red;
     public static Texture2D antlerTex;
-    public static Texture2D texture_car;
+    public static Texture2D weakEnemyTex, strongEnemyTex;
     public static Texture2D texture_road;
     public static Texture2D mooseTex;
     public static Texture2D background, wolfTex, hogTex;
@@ -18,7 +18,8 @@ internal static class TextureHandler
 
     public static void LoadTextures(ContentManager content, GraphicsDevice gd)
     {
-        texture_car = content.Load<Texture2D>("woo");
+        weakEnemyTex = content.Load<Texture2D>("woo");
+        strongEnemyTex = content.Load<Texture2D>("strongwoo");
         texture_road = content.Load<Texture2D>("path2");
         mooseTex = content.Load<Texture2D>("moose");
         background = content.Load<Texture2D>("bg");

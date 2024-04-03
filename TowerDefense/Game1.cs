@@ -88,15 +88,15 @@ namespace TowerDefense
                         enemyManager.Update(gameTime);
                         for (int i = 0; i < animalManager.GetMoose().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetMooseLasers(), gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime, forest);
                         }
                         for (int i = 0; i < animalManager.GetWolf().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetWolfLasers(), gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime, forest);
                         }
                         for (int i = 0; i < animalManager.GetHog().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetHogLasers(), gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime, forest);
                         }
 
                         base.Update(gameTime);

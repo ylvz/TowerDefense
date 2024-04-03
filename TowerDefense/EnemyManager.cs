@@ -15,18 +15,23 @@ namespace TowerDefense
     internal class EnemyManager
     {
         public List<WeakEnemy> enemies;
+        public List<StrongEnemy> strongEnemies;
         GraphicsDevice gd;
         Rectangle rect;
         int timeSinceLastCar = 0;
-        int millisecondsBetweenCreation = 2000;
-        int nrOfCarsInCurrentWave = 5;
+        int millisecondsBetweenWeakCreation = 1700;
+        int millisecondsBetweenStrongCreation = 3500;
+        int nrOfWeakEnemiesInCurrentWave = 5; // Track the number of weak enemies
+        int nrOfStrongEnemiesInCurrentWave = 5; // Track the number of strong enemies
         bool isHit = false;
         bool isDead = false;
+        bool isFirstWaveSpawned = false;
 
 
         public EnemyManager(GraphicsDevice gd)
         {
             enemies = new List<WeakEnemy>();
+            strongEnemies= new List<StrongEnemy>();
             this.gd = gd;
 
         }
@@ -34,49 +39,86 @@ namespace TowerDefense
         public void LoadWave(GameTime gameTime)
         {
             timeSinceLastCar += gameTime.ElapsedGameTime.Milliseconds;
-            if (nrOfCarsInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenCreation)
+
+            if (!isFirstWaveSpawned)
             {
-                timeSinceLastCar -= millisecondsBetweenCreation;
-                WeakEnemy enemy = new WeakEnemy(gd);
-                enemies.Add(enemy);
-                --nrOfCarsInCurrentWave;
+                if (nrOfWeakEnemiesInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenWeakCreation)
+                {
+                    timeSinceLastCar -= millisecondsBetweenWeakCreation;
+                    WeakEnemy enemy = new WeakEnemy(gd);
+                    enemies.Add(enemy);
+                    --nrOfWeakEnemiesInCurrentWave;
+                }
+                else if (nrOfWeakEnemiesInCurrentWave == 0)
+                {
+                    isFirstWaveSpawned = true;
+                    timeSinceLastCar = 0; // Reset time since last car for the second wave
+                }
+            }
+            else if (strongEnemies.Count == 0)
+            {
+                LoadSecondWave(gameTime);
             }
         }
+
+
+        public void LoadSecondWave(GameTime gameTime)
+        {
+            // Wait for 5 seconds before spawning the second wave
+            if (timeSinceLastCar < 20000)
+            {
+                timeSinceLastCar += gameTime.ElapsedGameTime.Milliseconds;
+                return;
+            }
+
+            if (nrOfStrongEnemiesInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenStrongCreation)
+            {
+                timeSinceLastCar -= millisecondsBetweenStrongCreation;
+                StrongEnemy enemy = new StrongEnemy(gd);
+                strongEnemies.Add(enemy);
+                --nrOfStrongEnemiesInCurrentWave; // Decrement the number of strong enemies
+            }
+        }
+
+
+
+
+
+
 
         public void Update(GameTime gameTime)
         {
             LoadWave(gameTime);
-            foreach (WeakEnemy enemy in enemies.ToList()) // Use ToList() to create a copy of the list
+
+            foreach (WeakEnemy enemy in enemies.ToList())
             {
                 enemy.Update(gameTime);
                 if (enemy.isDead)
-                {
-                    enemies.Remove(enemy); // Remove dead enemies from the list
-                }
+                    enemies.Remove(enemy);
             }
 
+            foreach (StrongEnemy enemy in strongEnemies.ToList())
+            {
+                enemy.Update(gameTime);
+                if (enemy.isDead)
+                    strongEnemies.Remove(enemy);
+            }
 
-
+            if (isFirstWaveSpawned)
+                LoadSecondWave(gameTime);
         }
+
+
 
         public void CollisionDetection(List<LaserBeam> lasers, GameTime gameTime, Forest forest)
         {
-            foreach (WeakEnemy enemy in enemies)
+            for (int i = lasers.Count - 1; i >= 0; i--)
             {
-                if (enemy.hitBox.Intersects(forest.hitBox) && !enemy.hasCollidedWithForest)
-                {
-                    // Deduct only one life if the enemy has not collided with the forest before
-                    forest.maxLife -= 1;
-                    enemy.hasCollidedWithForest = true; // Set the flag to true
-                }
-                
-            }
+                LaserBeam lb = lasers[i];
 
-            foreach (LaserBeam lb in lasers)
-            {
+                // Collision detection with weak enemies
                 foreach (WeakEnemy enemy in enemies)
                 {
-                    // Perform collision detection with each enemy and laser
                     if (enemy.hitBox.Intersects(lb.hitBox))
                     {
                         if (enemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
@@ -84,14 +126,41 @@ namespace TowerDefense
                             enemy.maxLives -= 1;
                             Debug.WriteLine(enemy.maxLives);
                             enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
-                            lb.hasHit = true;
+                            lb.hasHit = true; // Mark the laser as hit
+                            break; // Exit the loop since the laser has hit an enemy
                         }
                     }
-                    else
+                }
+
+
+                foreach (StrongEnemy senemy in strongEnemies)
+                {
+                    if (senemy.hitBox.Intersects(lb.hitBox))
                     {
-                        enemy.isHit = false;
+                        if (senemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
+                        {
+                            senemy.maxLives -= 1; // Decrease the life of the enemy
+                            Debug.WriteLine(senemy.maxLives);
+                            senemy.cooldownTimer = senemy.cooldownDuration; // Start the cooldown timer
+                            lb.hasHit = true; // Mark the laser as hit
+                            break; // Exit the loop since the laser has hit an enemy
+                        }
                     }
                 }
+
+
+                // Remove the laser from the list if it has hit an enemy
+                List<LaserBeam> lasersCopy = new List<LaserBeam>(lasers);
+
+                // Remove the laser from the list if it has hit an enemy
+                foreach (LaserBeam laser in lasersCopy)
+                {
+                    if (laser.hasHit)
+                    {
+                        lasers.Remove(laser);
+                    }
+                }
+
             }
 
             // Cooldown timer update
@@ -102,7 +171,16 @@ namespace TowerDefense
                     enemy.cooldownTimer -= gameTime.ElapsedGameTime.Milliseconds;
                 }
             }
+            foreach (StrongEnemy enemy in strongEnemies)
+            {
+                if (enemy.cooldownTimer > 0)
+                {
+                    enemy.cooldownTimer -= gameTime.ElapsedGameTime.Milliseconds;
+                }
+            }
         }
+
+
 
 
 
@@ -111,6 +189,11 @@ namespace TowerDefense
             foreach (WeakEnemy enemy in enemies)
             {
                  enemy.Draw(spriteBatch);
+            }
+
+            foreach (StrongEnemy enemy in strongEnemies)
+            {
+                enemy.Draw(spriteBatch);
             }
         }
 

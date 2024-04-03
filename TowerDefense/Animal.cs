@@ -37,6 +37,29 @@ namespace TowerDefense
             lasers.Add(laser);
         }
 
+        public void DeleteHitLasers()
+        {
+            // Create a new list to store lasers that need to be removed
+            List<LaserBeam> lasersToRemove = new List<LaserBeam>();
+
+            // Iterate through the lasers and check if they are hit
+            foreach (LaserBeam laser in lasers)
+            {
+                if (laser.hasHit)
+                {
+                    // If a laser is hit, add it to the list of lasers to be removed
+                    lasersToRemove.Add(laser);
+                }
+            }
+
+            // Remove the hit lasers from the list
+            foreach (LaserBeam laserToRemove in lasersToRemove)
+            {
+                lasers.Remove(laserToRemove);
+            }
+        }
+
+
         public void FireShot()
         {
             // Create a new instance of LaserBeam representing the shot

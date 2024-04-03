@@ -15,11 +15,6 @@ namespace TowerDefense
     {
         /// Catmull-Rom path
         CatmullRomPath cpath_moving;
-        private int timeSinceLastFrame = 0;
-        private int millisecondsPerFrame = 200;
-        private Point currentFrame = new Point(0, 0);
-        private Point sheetSize = new Point(5, 1);
-        private Point frameSize = new Point(121, 70);
         public int cooldownTimer = 0;
         public int cooldownDuration = 1000;
         public bool hasCollidedWithForest = false;
@@ -52,7 +47,7 @@ namespace TowerDefense
             // Call again if curve is altered or if window is resized
 
             cpath_moving.DrawFillSetup(gd, 2, 1, 256);
-            tex = TextureHandler.texture_car;
+            tex = TextureHandler.weakEnemyTex;
             pos=new Vector2(hitBox.X, hitBox.Y);
             hitBox = new Rectangle(0, 0, 50, 50);
         }

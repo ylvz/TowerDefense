@@ -13,10 +13,13 @@ namespace TowerDefense
         public Rectangle hitBox;
         private float rotationSpeed = MathHelper.ToRadians(-1);
 
+
+
         public LaserBeam(Vector2 startPos)
         {
             pos = startPos;
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.antlerTex.Height, TextureHandler.antlerTex.Width);
+
         }
 
         public void Update(GameTime gameTime)
@@ -39,8 +42,6 @@ namespace TowerDefense
 
             // Draw with rotation
 
-            if (!hasHit)
-            {
                 if (animalType == "Moose")
                 {
                     spriteBatch.Draw(TextureHandler.antlerTex, pos, null, Color.White, rotation, origin, 1.0f, SpriteEffects.None, 0.0f);
@@ -53,7 +54,6 @@ namespace TowerDefense
                 {
                     spriteBatch.Draw(TextureHandler.spikesTex, pos, null, Color.White, 0, origin, 1.0f, SpriteEffects.None, 0.0f);
                 }
-            }
 
         }
     }

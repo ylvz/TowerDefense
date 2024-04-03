@@ -46,6 +46,7 @@ namespace TowerDefense
             {
                 laser.Update(gameTime);
             }
+            DeleteHitLasers();
             PlayerAni(gameTime);
 
         }

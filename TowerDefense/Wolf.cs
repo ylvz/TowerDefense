@@ -13,7 +13,6 @@ namespace TowerDefense
 {
     internal class Wolf : Animal
     {
-        public LaserBeam laser;
 
         public Wolf(Vector2 pos, Texture2D tex) : base(pos,tex)
         {
@@ -46,6 +45,7 @@ namespace TowerDefense
             {
                 laser.Update(gameTime);
             }
+            DeleteHitLasers();
 
         }
         public void Draw(SpriteBatch spriteBatch)
