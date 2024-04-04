@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TowerDefence;
 using TowerDefense;
 using Microsoft.Xna.Framework.Input;
+using System.Data.SqlTypes;
 
 namespace TowerDefense
 {
@@ -115,7 +116,6 @@ namespace TowerDefense
         }
 
 
-
         public void Update(GameTime gameTime, EnemyManager enemyManager, MouseState previousMouseState)
         {
             MouseState currentMouseState = Mouse.GetState();
@@ -128,18 +128,22 @@ namespace TowerDefense
             {
                 IsPlacingObject = true;
                 AnimalToBePlaced[0] = AddPotentialMoose(MouseCoordinateX, MouseCoordinateY);
+                
             }
             // Check if the 'W' key is pressed to start placing a wolf
             if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released && wolfRect.Contains(MouseCoordinateX, MouseCoordinateY))
             {
                 IsPlacingObject = true;
                 AnimalToBePlaced[0] = AddPotentialWolf(MouseCoordinateX, MouseCoordinateY);
+                
+
             }
             // Check if the 'H' key is pressed to start placing a hedgehog
             else if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released && hogRect.Contains(MouseCoordinateX, MouseCoordinateY))
             {
                 IsPlacingObject = true;
                 AnimalToBePlaced[0] = AddPotentialHedgeHog(MouseCoordinateX, MouseCoordinateY);
+                
             }
 
             // Check if the right mouse button is clicked to place the animal
@@ -148,14 +152,20 @@ namespace TowerDefense
                 if (AnimalToBePlaced[0] is Moose)
                 {
                     AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Moose");
+                    Forest.money -= 300;
+
                 }
                 if (AnimalToBePlaced[0] is Wolf)
                 {
                     AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "Wolf");
+                    Forest.money -= 200;
+
                 }
                 if (AnimalToBePlaced[0] is HedgeHog)
                 {
                     AddAnimal(new Vector2(MouseCoordinateX, MouseCoordinateY), enemyManager, "HedgeHog");
+                    Forest.money -= 100;
+
                 }
                 IsPlacingObject = false; // Reset placing state
                 AnimalToBePlaced[0] = null; // Clear potential animal

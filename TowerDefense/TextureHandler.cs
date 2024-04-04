@@ -9,12 +9,13 @@ internal static class TextureHandler
     public static Texture2D antlerTex;
     public static Texture2D weakEnemyTex, strongEnemyTex;
     public static Texture2D texture_road;
-    public static Texture2D mooseTex;
+    public static Texture2D mooseTex, priceTex1, priceTex2, priceTex3;
     public static Texture2D background, wolfTex, hogTex;
     public static Texture2D spikesTex, biteTex;
     public static Texture2D mainMenu, wolfButton, mooseButton, hogButton;
     public static Texture2D placingMooseTex, placingWolfTex, placingHogTex;
     public static Texture2D startButton, quitButton, storyButton, healthTex, forestTex;
+    public static SpriteFont spriteFont;
 
     public static void LoadTextures(ContentManager content, GraphicsDevice gd)
     {
@@ -37,6 +38,11 @@ internal static class TextureHandler
         placingMooseTex = content.Load<Texture2D>("MoosePlacer");
         placingWolfTex = content.Load<Texture2D>("WolfPlacer");
         placingHogTex = content.Load<Texture2D>("HogPlacer");
+        priceTex1 = content.Load<Texture2D>("1");
+        priceTex2 = content.Load<Texture2D>("2");
+        priceTex3 = content.Load<Texture2D>("3");
+        spriteFont = content.Load<SpriteFont>("File");
+
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });
 

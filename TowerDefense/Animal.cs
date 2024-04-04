@@ -24,7 +24,6 @@ namespace TowerDefense
         protected float timeSinceLastShot;
         protected float shotInterval;
 
-
         public Animal(Vector2 Pos, Texture2D Tex)
         {
             tex = Tex;

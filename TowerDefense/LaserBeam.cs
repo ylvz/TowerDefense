@@ -19,7 +19,6 @@ namespace TowerDefense
         {
             pos = startPos;
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.antlerTex.Height, TextureHandler.antlerTex.Width);
-
         }
 
         public void Update(GameTime gameTime)

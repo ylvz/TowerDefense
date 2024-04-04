@@ -27,7 +27,6 @@ namespace TowerDefense
         bool isDead = false;
         bool isFirstWaveSpawned = false;
 
-
         public EnemyManager(GraphicsDevice gd)
         {
             enemies = new List<WeakEnemy>();
@@ -83,9 +82,6 @@ namespace TowerDefense
 
 
 
-
-
-
         public void Update(GameTime gameTime)
         {
             LoadWave(gameTime);
@@ -94,14 +90,22 @@ namespace TowerDefense
             {
                 enemy.Update(gameTime);
                 if (enemy.isDead)
+                {
                     enemies.Remove(enemy);
+                    Forest.money += 50;
+                }
+
             }
 
             foreach (StrongEnemy enemy in strongEnemies.ToList())
             {
                 enemy.Update(gameTime);
                 if (enemy.isDead)
+                {
+                    Forest.money += 100;
                     strongEnemies.Remove(enemy);
+                }
+
             }
 
             if (isFirstWaveSpawned)

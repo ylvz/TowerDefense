@@ -22,8 +22,6 @@ namespace TowerDefense
         ButtonManager buttonManager;
         Forest forest;
         MouseState previousMouseState;
-
-
         KeyboardState ks;
         GameState currentGameState = GameState.Level1;
 
@@ -40,7 +38,6 @@ namespace TowerDefense
             _graphics.PreferredBackBufferWidth = 1148;
             _graphics.PreferredBackBufferHeight = 800;
             _graphics.ApplyChanges();
-
             Window.Title = "SpeedScan Enforcer";
 
             base.Initialize();
@@ -60,6 +57,7 @@ namespace TowerDefense
             buttonManager = new ButtonManager();
             forest = new Forest();
             renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -106,7 +104,6 @@ namespace TowerDefense
             }
 
         }
-
 
         protected override void Draw(GameTime gameTime)
         {
@@ -159,7 +156,6 @@ namespace TowerDefense
             }
 
             _spriteBatch.End();
-
             //Sätt GraphicsDevice att åter igen peka på skärmen
             GraphicsDevice.SetRenderTarget(null);
         }
@@ -187,11 +183,8 @@ namespace TowerDefense
                     return false;
             }
 
-            
-
             return true;
         }
-
 
         public void SwitchToLevel1()
         {
@@ -201,8 +194,6 @@ namespace TowerDefense
         {
             currentGameState = GameState.Level1;
         }
-
-
 
     }
 }
