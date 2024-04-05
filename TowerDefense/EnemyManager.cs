@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParticleEngine2D;
 using SharpDX.Direct3D9;
 using SharpDX.MediaFoundation;
 using System;
@@ -26,13 +27,15 @@ namespace TowerDefense
         bool isHit = false;
         bool isDead = false;
         bool isFirstWaveSpawned = false;
+        private Emitter mudParticleEmitter;
+
 
         public EnemyManager(GraphicsDevice gd)
         {
             enemies = new List<WeakEnemy>();
             strongEnemies= new List<StrongEnemy>();
             this.gd = gd;
-
+            mudParticleEmitter = new Emitter(TextureHandler.mudTex);
         }
 
         public void LoadWave(GameTime gameTime)
@@ -81,7 +84,6 @@ namespace TowerDefense
 
 
 
-
         public void Update(GameTime gameTime)
         {
             LoadWave(gameTime);
@@ -89,10 +91,12 @@ namespace TowerDefense
             foreach (WeakEnemy enemy in enemies.ToList())
             {
                 enemy.Update(gameTime);
+                mudParticleEmitter.Emit(enemy.pos, 1);
+
                 if (enemy.isDead)
                 {
                     enemies.Remove(enemy);
-                    Forest.money += 50;
+                    AnimalManager.money += 50;
                 }
 
             }
@@ -100,14 +104,16 @@ namespace TowerDefense
             foreach (StrongEnemy enemy in strongEnemies.ToList())
             {
                 enemy.Update(gameTime);
+                mudParticleEmitter.Emit(enemy.pos, 1);
                 if (enemy.isDead)
                 {
-                    Forest.money += 100;
+                    AnimalManager.money += 100;
                     strongEnemies.Remove(enemy);
                 }
 
             }
 
+            mudParticleEmitter.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             if (isFirstWaveSpawned)
                 LoadSecondWave(gameTime);
         }
@@ -199,6 +205,7 @@ namespace TowerDefense
             {
                 enemy.Draw(spriteBatch);
             }
+            mudParticleEmitter.Draw(spriteBatch);
         }
 
         public List<Vector2> GetEnemyPositions()

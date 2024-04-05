@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ParticleEngine2D;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -159,7 +160,7 @@ namespace TowerDefense
             //Sätt GraphicsDevice att åter igen peka på skärmen
             GraphicsDevice.SetRenderTarget(null);
         }
-
+        
         public static bool CanPlaceObject(Animal g)
         {
             if (g == null || g.tex == null || renderTarget == null)

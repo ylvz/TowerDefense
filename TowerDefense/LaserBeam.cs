@@ -14,11 +14,11 @@ namespace TowerDefense
         private float rotationSpeed = MathHelper.ToRadians(-1);
 
 
-
         public LaserBeam(Vector2 startPos)
         {
             pos = startPos;
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.antlerTex.Height, TextureHandler.antlerTex.Width);
+
         }
 
         public void Update(GameTime gameTime)

@@ -8,7 +8,7 @@ internal static class TextureHandler
     public static Texture2D texture_red;
     public static Texture2D antlerTex;
     public static Texture2D weakEnemyTex, strongEnemyTex;
-    public static Texture2D texture_road;
+    public static Texture2D texture_road, mudTex;
     public static Texture2D mooseTex, priceTex1, priceTex2, priceTex3;
     public static Texture2D background, wolfTex, hogTex;
     public static Texture2D spikesTex, biteTex;
@@ -42,7 +42,7 @@ internal static class TextureHandler
         priceTex2 = content.Load<Texture2D>("2");
         priceTex3 = content.Load<Texture2D>("3");
         spriteFont = content.Load<SpriteFont>("File");
-
+        mudTex = content.Load<Texture2D>("mud1");
         texture_red = new Texture2D(gd, 1, 1, false, SurfaceFormat.Color);
         texture_red.SetData<Microsoft.Xna.Framework.Color>(new Color[] { Color.Red });
 

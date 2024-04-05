@@ -19,7 +19,7 @@ namespace TowerDefense
         public int cooldownDuration = 1000;
         public bool hasCollidedWithForest = false;
         Texture2D tex;
-        Vector2 pos;
+        public Vector2 pos;
         public Rectangle hitBox;
 
 
@@ -48,7 +48,7 @@ namespace TowerDefense
             cpath_moving.DrawFillSetup(gd, 2, 1, 256);
             tex = TextureHandler.strongEnemyTex;
             hitBox = new Rectangle(0, 0, 50, 50); // Initialize hitbox first
-            pos = new Vector2(hitBox.X, hitBox.Y); // Initialize pos using hitbox position
+            UpdatePosition();
         }
 
 
@@ -56,19 +56,22 @@ namespace TowerDefense
         {
             // Step our location forward along the curve forward
             curve_curpos += curve_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (curve_curpos < 1 & curve_curpos > 0)
-            {
-                Vector2 vec = cpath_moving.EvaluateAt(curve_curpos);
-                hitBox.X = (int)vec.X;
-                hitBox.Y = (int)vec.Y;
-            }
-
+            UpdatePosition();
             if (maxLives < 1)
             {
                 isDead = true;
             }
+        }
 
-
+        private void UpdatePosition()
+        {
+            if (curve_curpos >= 0 && curve_curpos <= 1)
+            {
+                Vector2 vec = cpath_moving.EvaluateAt(curve_curpos);
+                hitBox.X = (int)vec.X;
+                hitBox.Y = (int)vec.Y;
+                pos = vec;
+            }
         }
 
         public void Draw(SpriteBatch _spriteBatch)
