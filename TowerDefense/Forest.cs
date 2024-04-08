@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -14,7 +15,7 @@ namespace TowerDefense
     internal class Forest
     {
 
-        public int maxLife = 20;
+        public int maxLife = 15;
         public Vector2 rectPos;
         public Rectangle hitBox;
 
@@ -23,13 +24,14 @@ namespace TowerDefense
         public Forest()
         {
             hitBox = new Rectangle(993, 258, 156, 222);
-            
-
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(Game1 game1)
         {
-
+            if (maxLife == 14)
+            {
+                game1.SwitchToLoose();
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -41,7 +43,7 @@ namespace TowerDefense
             // Calculate the position of the health bar above the forest
             int healthBarX = hitBox.X - TextureHandler.healthTex.Width - 5;
             int healthBarY = hitBox.Y - TextureHandler.healthTex.Height - 28;
-            int segmentWidth = 40;
+            int segmentWidth = 15;
 
             // Draw health bar segments
             for (int i = 0; i < maxLife; i++)

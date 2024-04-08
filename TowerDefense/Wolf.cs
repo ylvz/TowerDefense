@@ -29,23 +29,24 @@ namespace TowerDefense
 
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, EnemyManager enemyManager)
         {
-            
-            PlayerAni(gameTime);
+
             timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            Vector2 nearestEnemyPosition = enemyManager.GetNearestEnemyPosition(pos);
 
             // Check if it's time to fire a new shot
             if (timeSinceLastShot >= shotInterval)
             {
-                FireShot();
+                FireShot("Wolf");
                 timeSinceLastShot = 0; // Reset the timer
             }
             foreach (var laser in lasers)
             {
-                laser.Update(gameTime);
+                laser.Update(gameTime, nearestEnemyPosition, "Wolf");
             }
             DeleteHitLasers();
+            PlayerAni(gameTime);
 
         }
         public void Draw(SpriteBatch spriteBatch)

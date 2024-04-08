@@ -1,36 +1,78 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace TowerDefense
 {
     public class LaserBeam
     {
         // Your existing fields
-        private float speed = 3;
+        private float speed = 0;
         private float rotation = 0;
-        private Vector2 pos;
+        Vector2 pos;
         public bool hasHit;
         public Rectangle hitBox;
-        private float rotationSpeed = MathHelper.ToRadians(-1);
+        private float rotationSpeed = MathHelper.ToRadians(180);
+        public string AnimalType { get; set; }
 
 
-        public LaserBeam(Vector2 startPos)
+        public LaserBeam(Vector2 startPos,string animalType)
         {
             pos = startPos;
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, TextureHandler.antlerTex.Height, TextureHandler.antlerTex.Width);
+            AnimalType = animalType;
 
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 targetPosition, string animalType)
         {
-            // Update the position and rotation
-            pos.X -= speed;
-            rotation += rotationSpeed;
-            hitBox.X = (int)pos.X;
-
-            if (rotation > MathHelper.TwoPi)
+            if (animalType == "Moose")
             {
-                rotation -= MathHelper.TwoPi;
+                Vector2 direction = Vector2.Normalize(targetPosition - pos);
+                speed = 100;
+                // Update position based on direction and speed
+                pos += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                // Update hitbox position accordingly
+                hitBox.X = (int)pos.X;
+                hitBox.Y = (int)pos.Y;
+
+                // Update rotation if needed
+                // (This code might need modification based on how you handle rotation)
+                rotation += rotationSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (rotation > MathHelper.Pi)
+                {
+                    rotation -= MathHelper.TwoPi;
+                }
+                else if (rotation < -MathHelper.Pi)
+                {
+                    rotation += MathHelper.TwoPi;
+                }
+            }
+            if (animalType == "Wolf")
+            {
+                Vector2 direction = Vector2.Normalize(targetPosition - pos);
+                speed = 150;
+                // Update position based on direction and speed
+                pos += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                // Update hitbox position accordingly
+                hitBox.X = (int)pos.X;
+                hitBox.Y = (int)pos.Y;
+
+            }
+            if (animalType == "HedgeHog")
+            {
+                Vector2 direction = Vector2.Normalize(targetPosition - pos);
+                speed = 200;
+                // Update position based on direction and speed
+                pos += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                // Update hitbox position accordingly
+                hitBox.X = (int)pos.X;
+                hitBox.Y = (int)pos.Y;
+
             }
         }
 
@@ -54,6 +96,11 @@ namespace TowerDefense
                     spriteBatch.Draw(TextureHandler.spikesTex, pos, null, Color.White, 0, origin, 1.0f, SpriteEffects.None, 0.0f);
                 }
 
+        }
+
+        public bool IsOutOfBounds()
+        {
+            return pos.X < 0;
         }
     }
 }

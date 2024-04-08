@@ -73,7 +73,7 @@ namespace TowerDefense
 
         public void AddAnimal(Vector2 pos, EnemyManager enemyManager, string animalType)
         {
-            LaserBeam lb = new LaserBeam(pos);
+            LaserBeam lb = new LaserBeam(pos,animalType);
 
             if (animalType == "Moose")
             {
@@ -201,15 +201,15 @@ namespace TowerDefense
             // Update animals
             foreach (Moose m in mooseList)
             {
-                m.Update(gameTime);
+                m.Update(gameTime,enemyManager);
             }
             foreach (Wolf w in wolfList)
             {
-                w.Update(gameTime);
+                w.Update(gameTime, enemyManager);
             }
             foreach (HedgeHog h in hogList)
             {
-                h.Update(gameTime);
+                h.Update(gameTime, enemyManager);
             }
         }
 

@@ -25,6 +25,7 @@ namespace TowerDefense
             delay = 400;
             shotInterval = 5000;
             timeSinceLastShot = 0;
+            
         }
 
         public Vector2 GetPosition()
@@ -32,19 +33,20 @@ namespace TowerDefense
             return pos;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime, EnemyManager enemyManager)
         {
             timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            Vector2 nearestEnemyPosition = enemyManager.GetNearestEnemyPosition(pos);
 
             // Check if it's time to fire a new shot
             if (timeSinceLastShot >= shotInterval)
             {
-                FireShot();
+                FireShot("Moose");
                 timeSinceLastShot = 0; // Reset the timer
             }
             foreach (var laser in lasers)
             {
-                laser.Update(gameTime);
+                laser.Update(gameTime, nearestEnemyPosition,"Moose");
             }
             DeleteHitLasers();
             PlayerAni(gameTime);

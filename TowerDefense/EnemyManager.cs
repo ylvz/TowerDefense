@@ -33,7 +33,7 @@ namespace TowerDefense
         public EnemyManager(GraphicsDevice gd)
         {
             enemies = new List<WeakEnemy>();
-            strongEnemies= new List<StrongEnemy>();
+            strongEnemies = new List<StrongEnemy>();
             this.gd = gd;
             mudParticleEmitter = new Emitter(TextureHandler.mudTex);
         }
@@ -88,6 +88,7 @@ namespace TowerDefense
         {
             LoadWave(gameTime);
 
+
             foreach (WeakEnemy enemy in enemies.ToList())
             {
                 enemy.Update(gameTime);
@@ -101,14 +102,15 @@ namespace TowerDefense
 
             }
 
+
             foreach (StrongEnemy enemy in strongEnemies.ToList())
             {
                 enemy.Update(gameTime);
                 mudParticleEmitter.Emit(enemy.pos, 1);
                 if (enemy.isDead)
                 {
-                    AnimalManager.money += 100;
                     strongEnemies.Remove(enemy);
+                    AnimalManager.money += 100;
                 }
 
             }
@@ -118,10 +120,47 @@ namespace TowerDefense
                 LoadSecondWave(gameTime);
         }
 
-
-
-        public void CollisionDetection(List<LaserBeam> lasers, GameTime gameTime, Forest forest)
+        public void CollisionWithForest(Forest forest)
         {
+            foreach (WeakEnemy enemy in enemies)
+            {
+                // Check if the enemy's cooldown timer is active
+                if (enemy.cooldownTimer <= 0)
+                {
+                    // Check for collision with the forest's hitbox
+                    if (enemy.hitBox.Intersects(forest.hitBox))
+                    {
+                        // Handle the collision (reduce forest's life, start cooldown timer for the enemy)
+                        forest.maxLife -= 1;
+                        enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
+                        Debug.WriteLine(forest.maxLife);
+                    }
+                }
+            }
+
+            foreach (StrongEnemy enemy in strongEnemies)
+            {
+                // Check if the enemy's cooldown timer is active
+                if (enemy.cooldownTimer <= 0)
+                {
+                    // Check for collision with the forest's hitbox
+                    if (enemy.hitBox.Intersects(forest.hitBox))
+                    {
+                        // Handle the collision (reduce forest's life, start cooldown timer for the enemy)
+                        forest.maxLife -= 2;
+                        enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
+                        Debug.WriteLine(forest.maxLife);
+                    }
+                }
+            }
+        }
+
+
+        public void CollisionDetection(List<LaserBeam> lasers, GameTime gameTime)
+        {
+
+
+
             for (int i = lasers.Count - 1; i >= 0; i--)
             {
                 LaserBeam lb = lasers[i];
@@ -133,8 +172,9 @@ namespace TowerDefense
                     {
                         if (enemy.cooldownTimer <= 0) // Check if the enemy is not on cooldown
                         {
-                            enemy.maxLives -= 1;
+                            int damage = (lb.AnimalType == "Moose") ? 3 : ((lb.AnimalType == "Wolf") ? 2 : 1);
                             Debug.WriteLine(enemy.maxLives);
+                            enemy.maxLives -= damage;
                             enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
                             lb.hasHit = true; // Mark the laser as hit
                             break; // Exit the loop since the laser has hit an enemy
@@ -157,7 +197,6 @@ namespace TowerDefense
                         }
                     }
                 }
-
 
                 // Remove the laser from the list if it has hit an enemy
                 List<LaserBeam> lasersCopy = new List<LaserBeam>(lasers);
@@ -192,13 +231,11 @@ namespace TowerDefense
 
 
 
-
-
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (WeakEnemy enemy in enemies)
             {
-                 enemy.Draw(spriteBatch);
+                enemy.Draw(spriteBatch);
             }
 
             foreach (StrongEnemy enemy in strongEnemies)
@@ -208,17 +245,33 @@ namespace TowerDefense
             mudParticleEmitter.Draw(spriteBatch);
         }
 
-        public List<Vector2> GetEnemyPositions()
+        public Vector2 GetNearestEnemyPosition(Vector2 referencePosition)
         {
-            List<Vector2> positions = new List<Vector2>();
+            Vector2 nearestEnemyPosition = Vector2.Zero;
+            float shortestDistanceSquared = float.MaxValue;
+
             foreach (WeakEnemy enemy in enemies)
             {
-                positions.Add(enemy.GetPosition());
+                float distanceSquared = Vector2.DistanceSquared(referencePosition, enemy.pos);
+                if (distanceSquared < shortestDistanceSquared)
+                {
+                    shortestDistanceSquared = distanceSquared;
+                    nearestEnemyPosition = enemy.pos;
+                }
             }
-            return positions;
+
+            foreach (StrongEnemy enemy in strongEnemies)
+            {
+                float distanceSquared = Vector2.DistanceSquared(referencePosition, enemy.pos);
+                if (distanceSquared < shortestDistanceSquared)
+                {
+                    shortestDistanceSquared = distanceSquared;
+                    nearestEnemyPosition = enemy.pos;
+                }
+            }
+
+            return nearestEnemyPosition;
         }
-
-
 
     }
 }

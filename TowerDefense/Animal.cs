@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace TowerDefense
         protected float timeSinceLastShot;
         protected float shotInterval;
 
+
         public Animal(Vector2 Pos, Texture2D Tex)
         {
             tex = Tex;
@@ -38,20 +40,18 @@ namespace TowerDefense
 
         public void DeleteHitLasers()
         {
-            // Create a new list to store lasers that need to be removed
             List<LaserBeam> lasersToRemove = new List<LaserBeam>();
 
-            // Iterate through the lasers and check if they are hit
-            foreach (LaserBeam laser in lasers)
+            for (int i = 0; i < lasers.Count; i++)
             {
-                if (laser.hasHit)
+                LaserBeam laser = lasers[i];
+                if (laser.hasHit || laser.IsOutOfBounds())
                 {
-                    // If a laser is hit, add it to the list of lasers to be removed
+                    // Add debug message with index of laser being removed
                     lasersToRemove.Add(laser);
                 }
             }
 
-            // Remove the hit lasers from the list
             foreach (LaserBeam laserToRemove in lasersToRemove)
             {
                 lasers.Remove(laserToRemove);
@@ -59,10 +59,11 @@ namespace TowerDefense
         }
 
 
-        public void FireShot()
+
+        public void FireShot(string animalType)
         {
             // Create a new instance of LaserBeam representing the shot
-            LaserBeam newShot = new LaserBeam(pos);
+            LaserBeam newShot = new LaserBeam(pos,animalType);
             // Add the new shot to the list of lasers
             lasers.Add(newShot);
         }

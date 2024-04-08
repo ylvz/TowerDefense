@@ -24,7 +24,7 @@ namespace TowerDefense
         Forest forest;
         MouseState previousMouseState;
         KeyboardState ks;
-        GameState currentGameState = GameState.Level1;
+        GameState currentGameState = GameState.MainMenu;
 
         public Game1()
         {
@@ -74,7 +74,7 @@ namespace TowerDefense
                     {
                         currentGameState = GameState.Level1;
                     }
-                    buttonManager.Update(gameTime, this);
+                    buttonManager.Update(gameTime, this,"mainmenu");
                     break;
 
                 case GameState.Level1:
@@ -83,23 +83,33 @@ namespace TowerDefense
                         animalManager.Update(gameTime, enemyManager, previousMouseState); // Pass previousMouseState here
                         previousMouseState = currentMouseState; // Update previousMouseState for the next frame
                         DrawOnRenderTarget(levelManager.levels[0]);
-                        List<Vector2> enemyPositions = enemyManager.GetEnemyPositions();
                         enemyManager.Update(gameTime);
+                        forest.Update(this);
+                        enemyManager.CollisionWithForest(forest);
                         for (int i = 0; i < animalManager.GetMoose().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime);
                         }
                         for (int i = 0; i < animalManager.GetWolf().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime);
                         }
                         for (int i = 0; i < animalManager.GetHog().Count; i++)
                         {
-                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime, forest);
+                            enemyManager.CollisionDetection(animalManager.GetAllLasers(), gameTime);
                         }
 
                         base.Update(gameTime);
                     }
+                    break;
+
+                case GameState.WinScreen:
+
+                    buttonManager.Update(gameTime, this, "winscreen");
+                    break;
+
+                case GameState.LooseScreen:
+                    buttonManager.Update(gameTime, this, "loosescreen");
                     break;
 
             }
@@ -114,7 +124,7 @@ namespace TowerDefense
                 case GameState.MainMenu:
                     _spriteBatch.Begin();
                     _spriteBatch.Draw(TextureHandler.mainMenu, GraphicsDevice.Viewport.Bounds, Color.White);
-                    buttonManager.Draw(_spriteBatch);
+                    buttonManager.Draw(_spriteBatch,"mainmenu");
                     _spriteBatch.End();
 
 
@@ -130,6 +140,19 @@ namespace TowerDefense
                     base.Draw(gameTime);
                     break;
 
+                case GameState.WinScreen:
+                    _spriteBatch.Begin();
+                    _spriteBatch.Draw(TextureHandler.winBgTex, GraphicsDevice.Viewport.Bounds, Color.White);
+                    buttonManager.Draw(_spriteBatch, "winscreen");
+                    _spriteBatch.End();
+                    break;
+
+                case GameState.LooseScreen:
+                    _spriteBatch.Begin();
+                    _spriteBatch.Draw(TextureHandler.looseBgTex,GraphicsDevice.Viewport.Bounds, Color.White);
+                    buttonManager.Draw(_spriteBatch, "loosescreen");
+                    _spriteBatch.End();
+                    break;
             }
         }
 
@@ -187,13 +210,28 @@ namespace TowerDefense
             return true;
         }
 
-        public void SwitchToLevel1()
-        {
-            currentGameState = GameState.Level1;
-        }
         public void SwitchToStory()
         {
             currentGameState = GameState.Level1;
+        }
+
+        public void SwitchToWin()
+        {
+            currentGameState = GameState.WinScreen;
+        }
+
+        public void SwitchToLoose()
+        {
+            currentGameState = GameState.LooseScreen;
+        }
+
+        public void SwitchToLevel1()
+        {
+            currentGameState = GameState.Level1;
+            enemyManager.enemies.Clear();
+            enemyManager.strongEnemies.Clear();
+            forest.maxLife = 15;
+            LoadContent();
         }
 
     }

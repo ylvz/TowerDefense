@@ -13,7 +13,6 @@ namespace TowerDefense
 {
     internal class HedgeHog : Animal
     {
-
         public HedgeHog(Vector2 pos,Texture2D tex) : base(pos,tex)
         {
             hitBox = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
@@ -30,23 +29,24 @@ namespace TowerDefense
         }
 
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, EnemyManager enemyManager)
         {
 
-            PlayerAni(gameTime);
             timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            Vector2 nearestEnemyPosition = enemyManager.GetNearestEnemyPosition(pos);
 
             // Check if it's time to fire a new shot
             if (timeSinceLastShot >= shotInterval)
             {
-                FireShot();
+                FireShot("HedgeHog");
                 timeSinceLastShot = 0; // Reset the timer
             }
             foreach (var laser in lasers)
             {
-                laser.Update(gameTime);
+                laser.Update(gameTime, nearestEnemyPosition, "HedgeHog");
             }
             DeleteHitLasers();
+            PlayerAni(gameTime);
 
         }
 
