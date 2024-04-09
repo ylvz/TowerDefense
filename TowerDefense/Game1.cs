@@ -39,7 +39,7 @@ namespace TowerDefense
             _graphics.PreferredBackBufferWidth = 1148;
             _graphics.PreferredBackBufferHeight = 800;
             _graphics.ApplyChanges();
-            Window.Title = "SpeedScan Enforcer";
+            Window.Title = "Forest Defense";
 
             base.Initialize();
         }

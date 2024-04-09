@@ -42,7 +42,7 @@ namespace TowerDefense
             pricePos2 = new Vector2(550, 650);
             pricePos3 = new Vector2(700, 650);
             moneyPos = new Vector2(960, 50);
-            money = 1000;
+            money = 300;
             //laserManager= new LaserManager();
         }
 
