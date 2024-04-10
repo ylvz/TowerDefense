@@ -24,7 +24,7 @@ namespace TowerDefense
             frameSize = new Point(71, 50);
             delay = 400;
             timeSinceLast = 0;
-            shotInterval = 7000;
+            shotInterval = 4000;
             timeSinceLastShot = 0;
 
         }

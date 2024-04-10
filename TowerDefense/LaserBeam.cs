@@ -65,7 +65,7 @@ namespace TowerDefense
             if (animalType == "HedgeHog")
             {
                 Vector2 direction = Vector2.Normalize(targetPosition - pos);
-                speed = 200;
+                speed = 250;
                 // Update position based on direction and speed
                 pos += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 

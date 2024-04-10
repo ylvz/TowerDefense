@@ -15,7 +15,7 @@ namespace TowerDefense
     internal class Forest
     {
 
-        public int maxLife = 15;
+        public int maxLife = 30;
         public Vector2 rectPos;
         public Rectangle hitBox;
 
@@ -28,7 +28,7 @@ namespace TowerDefense
 
         public void Update(Game1 game1)
         {
-            if (maxLife == 14)
+            if (maxLife <= 0)
             {
                 game1.SwitchToLoose();
             }

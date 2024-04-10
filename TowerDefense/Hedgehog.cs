@@ -24,10 +24,9 @@ namespace TowerDefense
             frameSize = new Point(43, 25);
             delay = 400;
             timeSinceLast = 0;
-            shotInterval = 5000;
+            shotInterval = 3500;
             timeSinceLastShot = 0;
         }
-
 
         public void Update(GameTime gameTime, EnemyManager enemyManager)
         {

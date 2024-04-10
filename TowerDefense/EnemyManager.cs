@@ -6,6 +6,7 @@ using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace TowerDefense
                 if (nrOfWeakEnemiesInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenWeakCreation)
                 {
                     timeSinceLastCar -= millisecondsBetweenWeakCreation;
-                    WeakEnemy enemy = new WeakEnemy(gd);
+                    WeakEnemy enemy = new WeakEnemy(gd,TextureHandler.weakEnemyTex);
                     enemies.Add(enemy);
                     --nrOfWeakEnemiesInCurrentWave;
                 }
@@ -76,7 +77,7 @@ namespace TowerDefense
             if (nrOfStrongEnemiesInCurrentWave > 0 && timeSinceLastCar > millisecondsBetweenStrongCreation)
             {
                 timeSinceLastCar -= millisecondsBetweenStrongCreation;
-                StrongEnemy enemy = new StrongEnemy(gd);
+                StrongEnemy enemy = new StrongEnemy(gd,TextureHandler.strongEnemyTex);
                 strongEnemies.Add(enemy);
                 --nrOfStrongEnemiesInCurrentWave; // Decrement the number of strong enemies
             }
@@ -84,7 +85,7 @@ namespace TowerDefense
 
 
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Forest forest,Game1 game1)
         {
             LoadWave(gameTime);
 
@@ -92,7 +93,7 @@ namespace TowerDefense
             foreach (WeakEnemy enemy in enemies.ToList())
             {
                 enemy.Update(gameTime);
-                mudParticleEmitter.Emit(enemy.pos, 1);
+                mudParticleEmitter.Emit(enemy.GetPosition(), 1);
 
                 if (enemy.isDead)
                 {
@@ -106,7 +107,7 @@ namespace TowerDefense
             foreach (StrongEnemy enemy in strongEnemies.ToList())
             {
                 enemy.Update(gameTime);
-                mudParticleEmitter.Emit(enemy.pos, 1);
+                mudParticleEmitter.Emit(enemy.GetPosition(), 1);
                 if (enemy.isDead)
                 {
                     strongEnemies.Remove(enemy);
@@ -117,43 +118,44 @@ namespace TowerDefense
 
             mudParticleEmitter.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             if (isFirstWaveSpawned)
+            {
                 LoadSecondWave(gameTime);
+            }
+            if (isFirstWaveSpawned && enemies.Count == 0 && strongEnemies.Count == 0)
+            {
+                game1.SwitchToWin();
+            }
         }
 
         public void CollisionWithForest(Forest forest)
         {
-            foreach (WeakEnemy enemy in enemies)
+            // Remove enemies colliding with the forest
+            for (int i = enemies.Count - 1; i >= 0; i--)
             {
-                // Check if the enemy's cooldown timer is active
-                if (enemy.cooldownTimer <= 0)
+                if (enemies[i].hitBox.Intersects(forest.hitBox))
                 {
-                    // Check for collision with the forest's hitbox
-                    if (enemy.hitBox.Intersects(forest.hitBox))
-                    {
-                        // Handle the collision (reduce forest's life, start cooldown timer for the enemy)
-                        forest.maxLife -= 1;
-                        enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
-                        Debug.WriteLine(forest.maxLife);
-                    }
+                    // Reduce forest's life
+                    forest.maxLife -= 1;
+                    Debug.WriteLine(forest.maxLife);
+                    // Remove the enemy from the list
+                    enemies.RemoveAt(i);
                 }
             }
 
-            foreach (StrongEnemy enemy in strongEnemies)
+            // Remove strong enemies colliding with the forest
+            for (int i = strongEnemies.Count - 1; i >= 0; i--)
             {
-                // Check if the enemy's cooldown timer is active
-                if (enemy.cooldownTimer <= 0)
+                if (strongEnemies[i].hitBox.Intersects(forest.hitBox))
                 {
-                    // Check for collision with the forest's hitbox
-                    if (enemy.hitBox.Intersects(forest.hitBox))
-                    {
-                        // Handle the collision (reduce forest's life, start cooldown timer for the enemy)
-                        forest.maxLife -= 2;
-                        enemy.cooldownTimer = enemy.cooldownDuration; // Start the cooldown timer
-                        Debug.WriteLine(forest.maxLife);
-                    }
+                    // Reduce forest's life
+                    forest.maxLife -= 2;
+                    Debug.WriteLine(forest.maxLife);
+                    // Remove the enemy from the list
+                    strongEnemies.RemoveAt(i);
                 }
             }
         }
+
 
 
         public void CollisionDetection(List<LaserBeam> lasers, GameTime gameTime)
@@ -252,21 +254,21 @@ namespace TowerDefense
 
             foreach (WeakEnemy enemy in enemies)
             {
-                float distanceSquared = Vector2.DistanceSquared(referencePosition, enemy.pos);
+                float distanceSquared = Vector2.DistanceSquared(referencePosition, enemy.GetPosition());
                 if (distanceSquared < shortestDistanceSquared)
                 {
                     shortestDistanceSquared = distanceSquared;
-                    nearestEnemyPosition = enemy.pos;
+                    nearestEnemyPosition = enemy.GetPosition();
                 }
             }
 
             foreach (StrongEnemy enemy in strongEnemies)
             {
-                float distanceSquared = Vector2.DistanceSquared(referencePosition, enemy.pos);
+                float distanceSquared = Vector2.DistanceSquared(referencePosition, enemy.GetPosition());
                 if (distanceSquared < shortestDistanceSquared)
                 {
                     shortestDistanceSquared = distanceSquared;
-                    nearestEnemyPosition = enemy.pos;
+                    nearestEnemyPosition = enemy.GetPosition();
                 }
             }
 

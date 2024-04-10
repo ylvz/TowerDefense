@@ -11,48 +11,21 @@ using System.Diagnostics;
 
 namespace TowerDefense
 {
-    internal class StrongEnemy
+    internal class StrongEnemy:Enemy
     {
-        /// Catmull-Rom path
-        CatmullRomPath cpath_moving;
-        public int cooldownTimer = 0;
-        public int cooldownDuration = 1000;
-        public bool hasCollidedWithForest = false;
-        Texture2D tex;
-        public Vector2 pos;
-        public Rectangle hitBox;
 
 
-        // Current location along the curve (car).
-        // 0 and 1 is at the first and last control point, respectively.
-        float curve_curpos = 0;
-        float curve_speed = 0.03f;
-
-        GraphicsDevice gd;
-        public int maxLives = 6;
-        public bool isHit = false;
-        public bool isDead = false;
-
-        public StrongEnemy(GraphicsDevice gd)
+        public StrongEnemy(GraphicsDevice gd,Texture2D tex):base(gd,tex)
         {
-            this.gd = gd;
-            float tension_carpath = 0.5f; // 0 = sharp turns, 0.5 = moderate turns, 1 = soft turns
-            cpath_moving = new CatmullRomPath(gd, tension_carpath);
 
-            cpath_moving.Clear();
-            LoadPath.LoadPathFromFile(cpath_moving, "carpath1.txt");
 
-            // DrawFillSetup must be called (once) for every path that uses DrawFill
-            // Call again if curve is altered or if window is resized
-
-            cpath_moving.DrawFillSetup(gd, 2, 1, 256);
-            tex = TextureHandler.strongEnemyTex;
             hitBox = new Rectangle(0, 0, 50, 50); // Initialize hitbox first
+            maxLives = 5;
             UpdatePosition();
         }
 
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             // Step our location forward along the curve forward
             curve_curpos += curve_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -63,30 +36,14 @@ namespace TowerDefense
             }
         }
 
-        private void UpdatePosition()
-        {
-            if (curve_curpos >= 0 && curve_curpos <= 1)
-            {
-                Vector2 vec = cpath_moving.EvaluateAt(curve_curpos);
-                hitBox.X = (int)vec.X;
-                hitBox.Y = (int)vec.Y;
-                pos = vec;
-            }
-        }
-
-        public void Draw(SpriteBatch _spriteBatch)
+        public override void Draw(SpriteBatch _spriteBatch)
         {
 
-            //cpath_moving.DrawFill(gd, TextureHandler.texture_red);
-
-            // Draw control points
-            //cpath_road.DrawPoints(_spriteBatch, Color.Black, 6);
-            //cpath_moving.DrawPoints(_spriteBatch, Color.Blue, 6);
             if (curve_curpos < 1 & curve_curpos > 0)
                 cpath_moving.DrawMovingObject(curve_curpos, _spriteBatch, tex);
 
 
-            int segmentWidth = maxLives;
+            int segmentWidth = 10;
 
             // Calculate the position of the health bar above the enemy
             int healthBarX = hitBox.X - TextureHandler.healthTex.Width - 5;
@@ -105,10 +62,6 @@ namespace TowerDefense
             }
         }
 
-        public Vector2 GetPosition()
-        {
-            return pos;
-        }
 
     }
 }

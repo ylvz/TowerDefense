@@ -49,13 +49,13 @@ namespace ParticleEngine2D
     // Create and add new particles to the list
     for (int i = 0; i < count; i++)
     {
-        // Define an offset from the enemy's position for the particles to appear near the feet
-        Vector2 offset = new Vector2(random.Next(-10, 10), random.Next(20, 30)); // Adjust these values as needed
+        
+        Vector2 offset = new Vector2(random.Next(-10, 10), random.Next(20, 30)); 
 
         // Apply the offset to the enemy's position
         Vector2 newPosition = position + offset;
 
-        // Define particle properties (velocity, acceleration, lifespan, color, etc.)
+        
         Vector2 velocity = new Vector2((float)(random.NextDouble() * 2 - 1), (float)(random.NextDouble() * 2 - 1));
         Vector2 acceleration = new Vector2(0, 0.1f);
         float lifespan = 1.0f;

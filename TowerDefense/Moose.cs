@@ -23,7 +23,7 @@ namespace TowerDefense
             timeSinceLastFrame = 0;
             millisecondsPerFrame = 200;
             delay = 400;
-            shotInterval = 8000;
+            shotInterval = 5000;
             timeSinceLastShot = 0;
             
         }

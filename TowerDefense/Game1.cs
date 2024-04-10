@@ -83,7 +83,7 @@ namespace TowerDefense
                         animalManager.Update(gameTime, enemyManager, previousMouseState); // Pass previousMouseState here
                         previousMouseState = currentMouseState; // Update previousMouseState for the next frame
                         DrawOnRenderTarget(levelManager.levels[0]);
-                        enemyManager.Update(gameTime);
+                        enemyManager.Update(gameTime,forest,this);
                         forest.Update(this);
                         enemyManager.CollisionWithForest(forest);
                         for (int i = 0; i < animalManager.GetMoose().Count; i++)
